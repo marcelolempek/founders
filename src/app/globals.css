@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #ec6224;
+  --color-primary-light: #ed7b24;
+  --color-secondary: #0e2741;
+  --color-background: #0e2741;
+  --color-foreground: #ffffff;
+
+  --color-slate-50: #0e2741;
+  --color-slate-100: #1d4165;
+  --color-slate-200: #1d4165;
+  --color-slate-300: #1d4165;
+  --color-slate-400: #64748b;
+  --color-slate-500: #94a3b8;
+  --color-slate-600: #cbd5e1;
+  --color-slate-700: #e2e8f0;
+  --color-slate-800: #f1f5f9;
+  --color-slate-900: #ffffff;
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-card: #1d4165;
+  --color-surface: #1d4165;
+
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Noto Sans", sans-serif;
+}
+
+:root {
+  --background: #0e2741;
+  --foreground: #ffffff;
+  --primary: #ec6224;
+  --surface: #1d4165;
+}
+
+body {
+  background-color: #0e2741 !important;
+  color: #ffffff !important;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0e2741;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1d4165;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ec6224;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Premium card effect */
+.glass-effect {
+  background: rgba(29, 65, 101, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}

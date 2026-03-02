@@ -1,0 +1,36 @@
+import { createBrowserClient } from '@supabase/ssr';
+import type { Database } from './database.types';
+
+// Export Profile type from generated types
+export type Profile = Database['public']['Tables']['profiles']['Row'];
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+export const supabase = createBrowserClient<Database>(supabaseUrl, supabaseKey);
+
+// Helper to get current user
+export async function getCurrentUser() {
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
+}
+
+// Helper to get current user's profile
+export async function getCurrentProfile(): Promise<Profile | null> {
+    const user = await getCurrentUser();
+    if (!user) return null;
+
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+    return profile as Profile | null;
+}
+
+// Helper to sign out
+export async function signOut(): Promise<{ error: Error | null }> {
+    const { error } = await supabase.auth.signOut();
+    return { error };
+}

@@ -1,0 +1,68 @@
+-- ============================================
+-- CODE6MM - 021: REFACTOR POST TYPES
+-- ============================================
+-- Simplifica tipos de post para apenas 'sale' e 'text'
+-- Remove 'trade' e 'auction' do sistema
+-- ============================================
+
+BEGIN;
+
+-- Passo 1: Migrar posts existentes de trade/auction para sale
+UPDATE public.posts 
+SET type = 'sale' 
+WHERE type IN ('trade', 'auction');
+
+-- Passo 2: Converter para TEXT temporariamente
+ALTER TABLE public.posts ALTER COLUMN type TYPE TEXT;
+
+-- Passo 3: Dropar e recriar o enum
+DROP TYPE IF EXISTS public.listing_type CASCADE;
+CREATE TYPE public.listing_type AS ENUM ('sale', 'text');
+
+-- Passo 4: Converter de volta para o enum
+ALTER TABLE public.posts 
+    ALTER COLUMN type TYPE public.listing_type 
+    USING type::public.listing_type;
+
+-- Passo 5: Tornar price e condition opcionais
+ALTER TABLE public.posts ALTER COLUMN price DROP NOT NULL;
+ALTER TABLE public.posts ALTER COLUMN condition DROP NOT NULL;
+
+-- Passo 6: Remover constraints antigas se existirem
+DO $$ 
+BEGIN
+    ALTER TABLE public.posts DROP CONSTRAINT IF EXISTS posts_sale_requires_price;
+    ALTER TABLE public.posts DROP CONSTRAINT IF EXISTS posts_sale_requires_condition;
+    ALTER TABLE public.posts DROP CONSTRAINT IF EXISTS posts_text_no_price;
+    ALTER TABLE public.posts DROP CONSTRAINT IF EXISTS posts_text_no_condition;
+    ALTER TABLE public.posts DROP CONSTRAINT IF EXISTS posts_text_cannot_be_sold;
+EXCEPTION
+    WHEN undefined_object THEN NULL;
+END $$;
+
+-- Passo 7: Adicionar constraints para garantir integridade
+-- Quando type='sale', price e condition são obrigatórios
+ALTER TABLE public.posts ADD CONSTRAINT posts_sale_requires_price 
+    CHECK (type != 'sale' OR price IS NOT NULL);
+
+ALTER TABLE public.posts ADD CONSTRAINT posts_sale_requires_condition 
+    CHECK (type != 'sale' OR condition IS NOT NULL);
+
+-- Quando type='text', price e condition devem ser NULL
+ALTER TABLE public.posts ADD CONSTRAINT posts_text_no_price 
+    CHECK (type != 'text' OR price IS NULL);
+
+ALTER TABLE public.posts ADD CONSTRAINT posts_text_no_condition 
+    CHECK (type != 'text' OR condition IS NULL);
+
+-- Passo 8: Posts de texto nunca podem ser marcados como 'sold'
+ALTER TABLE public.posts ADD CONSTRAINT posts_text_cannot_be_sold 
+    CHECK (type != 'text' OR status != 'sold');
+
+-- Passo 9: Atualizar comentários da tabela
+COMMENT ON TABLE public.posts IS 'Posts do sistema: anúncios de venda (sale) ou posts de texto livre (text)';
+COMMENT ON COLUMN public.posts.type IS 'Tipo do post: sale (marketplace) ou text (social)';
+COMMENT ON COLUMN public.posts.price IS 'Preço do item. Obrigatório para type=sale, NULL para type=text';
+COMMENT ON COLUMN public.posts.condition IS 'Condição do item. Obrigatório for type=sale, NULL para type=text';
+
+COMMIT;

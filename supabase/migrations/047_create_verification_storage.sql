@@ -1,0 +1,47 @@
+-- ============================================
+-- VERIFICAÇÃO: Bucket de Storage Privado
+-- ============================================
+-- IMPORTANTE: Este bucket e suas policies devem ser criados manualmente
+-- via Supabase Dashboard ou usando a CLI com permissões adequadas.
+--
+-- INSTRUÇÕES:
+-- 1. Acesse: Supabase Dashboard > Storage
+-- 2. Criar novo bucket com as seguintes configurações:
+--    - Name: verification-documents
+--    - Public: FALSE (desmarcar)
+--    - File size limit: 10485760 (10MB)
+--    - Allowed MIME types: image/jpeg, image/png, image/webp, application/pdf
+--
+-- 3. Configurar RLS Policies no bucket:
+--    a) Policy "Admins can view all verification documents"
+--       - Operation: SELECT
+--       - Policy definition: bucket_id = 'verification-documents' AND public.is_admin_or_moderator(auth.uid())
+--
+--    b) Policy "Users can upload own verification documents"
+--       - Operation: INSERT  
+--       - Policy definition: bucket_id = 'verification-documents' AND (storage.foldername(name))[1] = auth.uid()::text
+--
+--    c) Policy "Users can view own verification documents"
+--       - Operation: SELECT
+--       - Policy definition: bucket_id = 'verification-documents' AND (storage.foldername(name))[1] = auth.uid()::text
+--
+--    d) Policy "Users can delete own verification documents"
+--       - Operation: DELETE
+--       - Policy definition: bucket_id = 'verification-documents' AND (storage.foldername(name))[1] = auth.uid()::text
+--
+-- ============================================
+-- ALTERNATIVA: Execute via SQL Editor (como superuser):
+-- ============================================
+
+-- Criar bucket PRIVADO para documentos de verificação
+-- INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+-- VALUES (
+--   'verification-documents',
+--   'verification-documents',
+--   FALSE,  -- ⚠️ PRIVADO! Documentos sensíveis (RG, CNH, CNPJ)
+--   10485760,  -- 10MB max
+--   ARRAY['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
+-- )
+-- ON CONFLICT (id) DO NOTHING;
+
+-- As policies devem ser criadas via Dashboard devido a permissões do storage schema

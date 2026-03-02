@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s /b \"C:\\\\Users\\\\Henrique Widmar\\\\OneDrive\\\\Documentos\\\\projetos\\\\stitch_create_post_screen\\\\airsoftfeed\\\\src\\\\lib\\\\hooks\")",
+      "Bash(npx supabase:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}

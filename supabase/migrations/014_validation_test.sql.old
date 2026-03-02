@@ -1,0 +1,234 @@
+-- ============================================
+-- CODE6MM - 014: VALIDAÇÃO COMPLETA
+-- ============================================
+-- Script de validação para garantir integridade do banco
+-- Este script apenas verifica, não altera dados
+-- ============================================
+
+DO $$
+DECLARE
+    v_table_count INTEGER;
+    v_enum_count INTEGER;
+    v_function_count INTEGER;
+    v_trigger_count INTEGER;
+    v_policy_count INTEGER;
+    v_index_count INTEGER;
+    v_view_count INTEGER;
+    v_missing_tables TEXT[] := '{}';
+    v_missing_enums TEXT[] := '{}';
+    v_result RECORD;
+BEGIN
+    RAISE NOTICE '========================================';
+    RAISE NOTICE 'INICIANDO VALIDAÇÃO DO BANCO DE DADOS';
+    RAISE NOTICE '========================================';
+
+    -- ============================================
+    -- 1. VALIDAR TABELAS
+    -- ============================================
+    SELECT COUNT(*) INTO v_table_count
+    FROM information_schema.tables
+    WHERE table_schema = 'public'
+    AND table_type = 'BASE TABLE';
+
+    RAISE NOTICE '';
+    RAISE NOTICE '1. TABELAS ENCONTRADAS: %', v_table_count;
+
+    -- Verificar tabelas obrigatórias
+    FOR v_result IN
+        SELECT unnest(ARRAY[
+            'profiles', 'follows', 'posts', 'post_images', 'likes',
+            'comments', 'reviews', 'reports', 'verification_requests',
+            'subscriptions', 'support_tickets', 'admin_logs', 'notifications',
+            'blocked_users', 'rate_limits', 'audit_trail', 'banned_words',
+            'user_sessions', 'suspicious_activities', 'edge_function_logs'
+        ]) AS required_table
+    LOOP
+        IF NOT EXISTS (
+            SELECT 1 FROM information_schema.tables
+            WHERE table_schema = 'public' AND table_name = v_result.required_table
+        ) THEN
+            v_missing_tables := array_append(v_missing_tables, v_result.required_table);
+            RAISE WARNING '   ✗ Tabela FALTANDO: %', v_result.required_table;
+        ELSE
+            RAISE NOTICE '   ✓ %', v_result.required_table;
+        END IF;
+    END LOOP;
+
+    IF array_length(v_missing_tables, 1) > 0 THEN
+        RAISE EXCEPTION 'Tabelas faltando: %', v_missing_tables;
+    END IF;
+
+    -- ============================================
+    -- 2. VALIDAR ENUMS
+    -- ============================================
+    SELECT COUNT(*) INTO v_enum_count
+    FROM pg_type t
+    JOIN pg_namespace n ON t.typnamespace = n.oid
+    WHERE n.nspname = 'public' AND t.typtype = 'e';
+
+    RAISE NOTICE '';
+    RAISE NOTICE '2. ENUMS ENCONTRADOS: %', v_enum_count;
+
+    FOR v_result IN
+        SELECT unnest(ARRAY[
+            'listing_type', 'post_condition', 'post_status', 'user_role',
+            'user_status', 'report_reason', 'report_status', 'verification_type',
+            'verification_status', 'report_priority', 'report_target_type',
+            'ticket_status', 'payment_method', 'payment_status'
+        ]) AS required_enum
+    LOOP
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_type t
+            JOIN pg_namespace n ON t.typnamespace = n.oid
+            WHERE n.nspname = 'public' AND t.typname = v_result.required_enum
+        ) THEN
+            v_missing_enums := array_append(v_missing_enums, v_result.required_enum);
+            RAISE WARNING '   ✗ Enum FALTANDO: %', v_result.required_enum;
+        ELSE
+            RAISE NOTICE '   ✓ %', v_result.required_enum;
+        END IF;
+    END LOOP;
+
+    IF array_length(v_missing_enums, 1) > 0 THEN
+        RAISE EXCEPTION 'Enums faltando: %', v_missing_enums;
+    END IF;
+
+    -- ============================================
+    -- 3. VALIDAR FUNÇÕES CRÍTICAS
+    -- ============================================
+    RAISE NOTICE '';
+    RAISE NOTICE '3. FUNÇÕES CRÍTICAS:';
+
+    FOR v_result IN
+        SELECT unnest(ARRAY[
+            'handle_new_user', 'update_updated_at_column', 'update_likes_count',
+            'update_comments_count', 'update_followers_count', 'update_user_posts_count',
+            'update_user_reputation', 'update_sales_count', 'is_admin_or_moderator',
+            'check_rate_limit', 'check_banned_words', 'auto_flag_post',
+            'record_login_attempt', 'block_user', 'calculate_report_priority',
+            'get_feed_posts', 'bump_post', 'is_following', 'has_liked_post'
+        ]) AS required_function
+    LOOP
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_proc p
+            JOIN pg_namespace n ON p.pronamespace = n.oid
+            WHERE n.nspname = 'public' AND p.proname = v_result.required_function
+        ) THEN
+            RAISE WARNING '   ✗ Função FALTANDO: %', v_result.required_function;
+        ELSE
+            RAISE NOTICE '   ✓ %', v_result.required_function;
+        END IF;
+    END LOOP;
+
+    -- ============================================
+    -- 4. VALIDAR TRIGGERS
+    -- ============================================
+    SELECT COUNT(*) INTO v_trigger_count
+    FROM information_schema.triggers
+    WHERE trigger_schema = 'public';
+
+    RAISE NOTICE '';
+    RAISE NOTICE '4. TRIGGERS ENCONTRADOS: %', v_trigger_count;
+
+    -- ============================================
+    -- 5. VALIDAR RLS HABILITADO
+    -- ============================================
+    RAISE NOTICE '';
+    RAISE NOTICE '5. ROW LEVEL SECURITY:';
+
+    FOR v_result IN
+        SELECT c.relname AS table_name, c.relrowsecurity AS rls_enabled
+        FROM pg_class c
+        JOIN pg_namespace n ON c.relnamespace = n.oid
+        WHERE n.nspname = 'public'
+        AND c.relkind = 'r'
+        AND c.relname IN ('profiles', 'posts', 'follows', 'likes', 'comments',
+                          'reviews', 'reports', 'notifications', 'blocked_users')
+        ORDER BY c.relname
+    LOOP
+        IF v_result.rls_enabled THEN
+            RAISE NOTICE '   ✓ % - RLS ATIVO', v_result.table_name;
+        ELSE
+            RAISE WARNING '   ✗ % - RLS DESATIVADO!', v_result.table_name;
+        END IF;
+    END LOOP;
+
+    -- ============================================
+    -- 6. VALIDAR POLÍTICAS RLS
+    -- ============================================
+    SELECT COUNT(*) INTO v_policy_count
+    FROM pg_policies
+    WHERE schemaname = 'public';
+
+    RAISE NOTICE '';
+    RAISE NOTICE '6. POLÍTICAS RLS ENCONTRADAS: %', v_policy_count;
+
+    -- ============================================
+    -- 7. VALIDAR ÍNDICES
+    -- ============================================
+    SELECT COUNT(*) INTO v_index_count
+    FROM pg_indexes
+    WHERE schemaname = 'public';
+
+    RAISE NOTICE '';
+    RAISE NOTICE '7. ÍNDICES ENCONTRADOS: %', v_index_count;
+
+    -- ============================================
+    -- 8. VALIDAR VIEWS
+    -- ============================================
+    SELECT COUNT(*) INTO v_view_count
+    FROM information_schema.views
+    WHERE table_schema = 'public';
+
+    RAISE NOTICE '';
+    RAISE NOTICE '8. VIEWS ENCONTRADAS: %', v_view_count;
+
+    -- ============================================
+    -- 9. VALIDAR CONSTRAINTS CRÍTICAS
+    -- ============================================
+    RAISE NOTICE '';
+    RAISE NOTICE '9. CONSTRAINTS CRÍTICAS:';
+
+    -- Verificar UNIQUE constraints
+    IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'follows_unique') THEN
+        RAISE NOTICE '   ✓ follows_unique';
+    ELSE
+        RAISE WARNING '   ✗ follows_unique FALTANDO';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'likes_unique') THEN
+        RAISE NOTICE '   ✓ likes_unique';
+    ELSE
+        RAISE WARNING '   ✗ likes_unique FALTANDO';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'blocked_users_unique') THEN
+        RAISE NOTICE '   ✓ blocked_users_unique';
+    ELSE
+        RAISE WARNING '   ✗ blocked_users_unique FALTANDO';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'rate_limits_user_action_unique') THEN
+        RAISE NOTICE '   ✓ rate_limits_user_action_unique';
+    ELSE
+        RAISE WARNING '   ✗ rate_limits_user_action_unique FALTANDO';
+    END IF;
+
+    -- ============================================
+    -- RESUMO FINAL
+    -- ============================================
+    RAISE NOTICE '';
+    RAISE NOTICE '========================================';
+    RAISE NOTICE 'RESUMO DA VALIDAÇÃO';
+    RAISE NOTICE '========================================';
+    RAISE NOTICE 'Tabelas:    % (esperado: 20)', v_table_count;
+    RAISE NOTICE 'Enums:      % (esperado: 14)', v_enum_count;
+    RAISE NOTICE 'Triggers:   %', v_trigger_count;
+    RAISE NOTICE 'Políticas:  %', v_policy_count;
+    RAISE NOTICE 'Índices:    %', v_index_count;
+    RAISE NOTICE 'Views:      %', v_view_count;
+    RAISE NOTICE '========================================';
+    RAISE NOTICE '✅ VALIDAÇÃO CONCLUÍDA COM SUCESSO!';
+    RAISE NOTICE '========================================';
+
+END $$;

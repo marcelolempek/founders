@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(supabase projects:*)",
+      "Bash(supabase db diff:*)",
+      "Bash(supabase migration:*)",
+      "Bash(supabase db execute:*)",
+      "Bash(supabase db dump:*)",
+      "Bash(supabase db push:*)",
+      "Bash(npm run build:*)",
+      "Bash(find:*)",
+      "Bash(if exist .nextlock del /f .nextlock)",
+      "Bash(npm run dev)"
+    ]
+  }
+}
