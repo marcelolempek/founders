@@ -297,9 +297,14 @@ export default function FeedScreenHome1() {
                                             : 'bg-surface-light/20' // Gray ring for seen/old
                                             } group-hover:scale-105 transition-transform`}>
                                             <div className="size-full rounded-full border-2 border-white bg-white overflow-hidden">
-                                                <div
-                                                    className="size-full bg-cover bg-center"
-                                                    style={{ backgroundImage: `url("${getR2Url(followedUser.avatar_url) || '/images/default-avatar.png'}")` }}
+                                                <img
+                                                    src={getR2Url(followedUser.avatar_url) || '/images/default-avatar.png'}
+                                                    alt={followedUser.username}
+                                                    className="size-full object-cover"
+                                                    referrerPolicy="no-referrer"
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                                                    }}
                                                 />
                                             </div>
                                         </div>
@@ -321,9 +326,14 @@ export default function FeedScreenHome1() {
                                         className="size-[68px] rounded-full p-[2px] bg-gradient-to-tr from-slate-700 to-slate-500 group-hover:scale-105 transition-transform cursor-pointer"
                                     >
                                         <div className="size-full rounded-full border-2 border-[#1D4165] bg-[#1D4165] overflow-hidden">
-                                            <div
-                                                className="size-full bg-cover bg-center opacity-60 group-hover:opacity-100 transition-opacity"
-                                                style={{ backgroundImage: `url("${getR2Url(suggestedUser.avatar_url) || '/images/default-avatar.png'}")` }}
+                                            <img
+                                                src={getR2Url(suggestedUser.avatar_url) || '/images/default-avatar.png'}
+                                                alt={suggestedUser.username}
+                                                className="size-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                                                referrerPolicy="no-referrer"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                                                }}
                                             />
                                         </div>
                                     </button>

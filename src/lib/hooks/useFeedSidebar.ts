@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase, getCurrentUser } from '@/lib/supabase';
-import { getImageUrl } from '@/lib/images';
+import { getImageUrl, getR2Url, getPostImageUrl } from '@/lib/images';
 
 // Hook for trending categories
 export function useTrendingCategories(limit: number = 5) {
@@ -148,12 +148,18 @@ export function useMyActiveListings(limit: number = 4) {
 
                 const cdnUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
 
-                const mapped = (data || []).map((item: any) => ({
-                    ...item,
-                    cover_image_url: item.cover_image_id
-                        ? getImageUrl(item.id, item.cover_image_id, 'feed')
-                        : item.cover_image,
-                }));
+                const mapped = (data || []).map((item: any) => {
+                    let coverImageUrl = null;
+                    if (item.images && item.images.length > 0) {
+                        const coverImg = item.images.find((img: any) => img.is_cover) || item.images[0];
+                        coverImageUrl = getPostImageUrl(item.id, coverImg.image_id, coverImg.url, 'feed');
+                    }
+
+                    return {
+                        ...item,
+                        cover_image_url: coverImageUrl,
+                    };
+                });
 
                 setListings(mapped);
 

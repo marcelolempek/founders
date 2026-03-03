@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/UserContext';
 import type { FeedPost } from '@/lib/database.types';
-import { getImageUrl, getR2Url } from '@/lib/images';
+import { getImageUrl, getR2Url, getPostImageUrl } from '@/lib/images';
 
 interface UseFeedOptions {
   category?: string | null;
@@ -168,12 +168,12 @@ export function useSearchPosts(options: UseSearchOptions) {
         const coverImg = images.find((i: Record<string, unknown>) => i.is_cover) || images[0];
         if (!coverImg) return null;
 
-        // R2: use getImageUrl if image_id exists
-        if (coverImg.image_id) {
-          return getImageUrl(post.id as string, coverImg.image_id as string, 'feed');
-        }
-        // Legacy Supabase: use url directly
-        return getR2Url((coverImg.url as string) || null);
+        return getPostImageUrl(
+          post.id as string,
+          (coverImg.image_id as string) || null,
+          (coverImg.url as string) || null,
+          'feed'
+        );
       })(),
       is_liked: false,
       is_saved: savedPostIds.has(post.id as string),

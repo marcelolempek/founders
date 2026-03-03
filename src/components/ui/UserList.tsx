@@ -73,9 +73,18 @@ export function UserList({ users, emptyMessage = 'Nenhum usuário encontrado', s
                 <div key={user.id} className="flex items-center gap-3 py-3 px-4 hover:bg-white/50 transition-colors">
                     <Link href={getProfileLink(user.id)} className="flex-shrink-0">
                         <div
-                            className="size-12 rounded-full bg-cover bg-center border-2 border-slate-200"
-                            style={{ backgroundImage: `url("${getR2Url(user.avatar) || '/images/default-avatar.png'}")` }}
-                        />
+                            className="size-12 rounded-full border-2 border-slate-200 overflow-hidden flex-shrink-0"
+                        >
+                            <img
+                                src={getR2Url(user.avatar) || '/images/default-avatar.png'}
+                                alt={user.username}
+                                className="size-full object-cover"
+                                referrerPolicy="no-referrer"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                                }}
+                            />
+                        </div>
 
                     </Link>
                     <div className="flex-1 min-w-0">

@@ -33,10 +33,10 @@ export function ImageGallery({ images, alts = [] }: ImageGalleryProps) {
         <div className="flex flex-col" onKeyDown={handleKeyDown} tabIndex={0}>
             {/* Main Image */}
             <div className="w-full aspect-[4/3] bg-black relative group cursor-pointer" onClick={() => setIsFullscreen(true)}>
-                <div
-                    className="absolute inset-0 bg-center bg-cover bg-no-repeat transition-opacity duration-300"
-                    style={{ backgroundImage: `url("${images[currentIndex]}")` }}
-                    data-alt={alts[currentIndex] || `Image ${currentIndex + 1}`}
+                <img
+                    src={images[currentIndex]}
+                    alt={alts[currentIndex] || `Image ${currentIndex + 1}`}
+                    className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
                 />
 
                 {/* Favorite Button */}
@@ -84,8 +84,8 @@ export function ImageGallery({ images, alts = [] }: ImageGalleryProps) {
                                 key={index}
                                 onClick={(e) => { e.stopPropagation(); handleThumbnailClick(index); }}
                                 className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
-                                        ? 'bg-primary w-4'
-                                        : 'bg-white/50 hover:bg-white/80'
+                                    ? 'bg-primary w-4'
+                                    : 'bg-white/50 hover:bg-white/80'
                                     }`}
                             />
                         ))}
@@ -101,14 +101,14 @@ export function ImageGallery({ images, alts = [] }: ImageGalleryProps) {
                             key={index}
                             onClick={() => handleThumbnailClick(index)}
                             className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden transition-all ${index === currentIndex
-                                    ? 'border-2 border-primary'
-                                    : 'border border-slate-200 opacity-70 hover:opacity-100'
+                                ? 'border-2 border-primary'
+                                : 'border border-slate-200 opacity-70 hover:opacity-100'
                                 }`}
                         >
-                            <div
-                                className="w-full h-full bg-cover bg-center"
-                                style={{ backgroundImage: `url("${image}")` }}
-                                data-alt={alts[index] || `Thumbnail ${index + 1}`}
+                            <img
+                                src={image}
+                                alt={alts[index] || `Thumbnail ${index + 1}`}
+                                className="w-full h-full object-cover"
                             />
                         </button>
                     ))}

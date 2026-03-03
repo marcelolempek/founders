@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, getCurrentUser } from '@/lib/supabase';
 import type { Profile } from '@/lib/database.types';
 import { toast } from '@/components/ui/Toast';
-import { getImageUrl } from '@/lib/images';
+import { getImageUrl, getR2Url, getPostImageUrl } from '@/lib/images';
 
 // Extended profile with counts
 export interface ProfileWithStats extends Profile {
@@ -398,15 +398,7 @@ export function useUserPosts(userId?: string | null) {
 
                 if (post.images && post.images.length > 0) {
                     const coverImg = post.images.find((img: any) => img.is_cover) || post.images[0];
-
-                    // R2: use getImageUrl if image_id exists
-                    if (coverImg.image_id) {
-                        coverUrl = getImageUrl(post.id, coverImg.image_id, 'feed');
-                    }
-                    // Legacy Supabase
-                    else if (coverImg.url) {
-                        coverUrl = coverImg.url;
-                    }
+                    coverUrl = getPostImageUrl(post.id, coverImg.image_id, coverImg.url, 'feed');
                 }
 
                 return {

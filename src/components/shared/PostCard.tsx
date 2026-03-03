@@ -17,7 +17,7 @@ import { toast } from '@/components/ui/Toast';
 import { useViewerRole } from '@/lib/hooks/useViewerRole';
 import { ViewerRole } from '@/types/post';
 import { ReportModal } from '@/components/ui/ReportModal';
-import { getImageUrl, getR2Url } from '@/lib/images';
+import { getImageUrl, getR2Url, getPostImageUrl } from '@/lib/images';
 import { getAbsolutePostUrl } from '@/lib/utils/postUrl';
 
 
@@ -372,10 +372,13 @@ export const PostCard = ({
                 onClick={handleClick}
                 className="flex items-center gap-3 p-3 rounded-lg bg-[#1D4165] border border-white/5 hover:border-primary/50 transition-all w-full text-left relative group cursor-pointer"
             >
-                <div
-                    className="size-16 rounded-lg bg-cover bg-center flex-shrink-0"
-                    style={{ backgroundImage: `url('${post.coverImage}')` }}
-                />
+                <div className="size-16 rounded-lg overflow-hidden flex-shrink-0">
+                    <img
+                        src={post.coverImage ?? '/images/default-avatar.png'}
+                        alt={post.title ?? 'Post'}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
                 <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-bold text-white truncate">{post.title}</h3>
                     <p className="text-xs text-slate-400 truncate">{location}</p>
@@ -480,10 +483,14 @@ export const PostCard = ({
 
                         {/* Add Comment Input */}
                         <div className="flex items-center gap-3 mt-1 relative">
-                            <div
-                                className="size-6 rounded-full bg-cover bg-center flex-shrink-0"
-                                style={{ backgroundImage: `url("${getR2Url(user?.user_metadata?.avatar_url || user?.user_metadata?.picture) || '/images/default-avatar.png'}")` }}
-                            ></div>
+                            <div className="size-6 rounded-full border border-white/10 overflow-hidden flex-shrink-0">
+                                <img
+                                    src={getR2Url(user?.user_metadata?.avatar_url || user?.user_metadata?.picture) || '/images/default-avatar.png'}
+                                    alt="Your Avatar"
+                                    className="w-full h-full object-cover"
+                                    referrerPolicy="no-referrer"
+                                />
+                            </div>
                             <input
                                 type="text"
                                 value={commentText}
@@ -538,22 +545,15 @@ export function toPostCardData(feedPost: any): PostCardData {
         const firstImage = coverObj || feedPost.images[0];
 
         if (firstImage && typeof firstImage === 'object') {
-            // R2: image_id exists, use helper
-            if (firstImage.image_id) {
-                derivedCoverImage = getImageUrl(postId, firstImage.image_id, 'feed');
-            }
-            // Legacy Supabase: url exists
-            else if (firstImage.url) {
-                derivedCoverImage = getR2Url(firstImage.url);
-            }
+            derivedCoverImage = getPostImageUrl(postId, firstImage.image_id, firstImage.url, 'feed');
         } else if (typeof firstImage === 'string') {
-            // Direct URL (legacy)
             derivedCoverImage = getR2Url(firstImage);
         }
     }
 
     // Fallback if still null
     if (!derivedCoverImage) {
+        // If it's a direct URL from RPC, use it
         derivedCoverImage = getR2Url(feedPost.cover_image_url || feedPost.cover_image || feedPost.coverImage) || null;
     }
 
@@ -562,17 +562,16 @@ export function toPostCardData(feedPost: any): PostCardData {
     if (Array.isArray(feedPost.images)) {
         feedPost.images.forEach((img: any) => {
             if (typeof img === 'object') {
-                if (img.image_id) {
-                    // R2
-                    mappedImages.push(getImageUrl(postId, img.image_id, 'feed'));
-                } else if (img.url) {
-                    // Legacy Supabase
-                    mappedImages.push(getR2Url(img.url));
-                }
+                mappedImages.push(getPostImageUrl(postId, img.image_id, img.url, 'feed'));
             } else if (typeof img === 'string') {
                 mappedImages.push(getR2Url(img));
             }
         });
+    }
+
+    // Determine cover image from mapped images if not found
+    if (!derivedCoverImage && mappedImages.length > 0) {
+        derivedCoverImage = mappedImages[0];
     }
 
     return {

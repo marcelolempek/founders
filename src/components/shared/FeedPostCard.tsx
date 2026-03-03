@@ -307,7 +307,7 @@ export const FeedPostCard = ({
 
                 {/* Add Comment Input (Always visible) */}
                 <div className="flex items-center gap-3 mt-1 relative">
-                    <div className="size-6 rounded-full bg-cover bg-center flex-shrink-0 overflow-hidden">
+                    <div className="size-6 rounded-full border border-white/10 flex-shrink-0 overflow-hidden">
                         <img
                             src={getBestAvatar(profile, user)}
                             alt="Your avatar"

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { createClient } from '@supabase/supabase-js';
 import PostDetail from '@/components/screens/post/PostDetail';
-import { getImageUrl } from '@/lib/images/imageUrl';
+import { getImageUrl, getPostImageUrl } from '@/lib/images/imageUrl';
 import { getAbsolutePostUrl, getShortId } from '@/lib/utils/postUrl';
 
 interface PageProps {
@@ -69,16 +69,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const coverImage = images.find((img: any) => img.is_cover) || images[0];
 
     // Build image URL using the helper function
-    let imageUrl = '';
-    if (coverImage) {
-        if (coverImage.image_id) {
-            // R2 image - use helper to construct URL
-            imageUrl = getImageUrl(post.id, coverImage.image_id, 'detail');
-        } else if (coverImage.url) {
-            // Legacy Supabase image - use as-is
-            imageUrl = coverImage.url;
-        }
-    }
+    const imageUrl = coverImage
+        ? getPostImageUrl(post.id, coverImage.image_id, coverImage.url, 'feed')
+        : '';
 
     const title = post.title || 'Post no Empreendedores de Cristo';
     const description = post.description?.substring(0, 160) || 'Confira este post no Empreendedores de Cristo';

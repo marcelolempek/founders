@@ -80,7 +80,17 @@ export function PostHeader({
     return (
         <div className="flex items-center justify-between px-3 py-3">
             <div className="flex items-center gap-2.5">
-                <Link href={profileLink} className="size-8 rounded-full bg-cover bg-center cursor-pointer border border-white/10" style={{ backgroundImage: `url("${userAvatar || '/images/default-avatar.png'}")` }}></Link>
+                <Link href={profileLink} className="size-8 rounded-full cursor-pointer border border-white/10 overflow-hidden">
+                    <img
+                        src={userAvatar || '/images/default-avatar.png'}
+                        alt={username}
+                        className="size-full object-cover"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                        }}
+                    />
+                </Link>
                 <div className="flex flex-col leading-tight">
                     <div className="flex items-center gap-1">
                         <Link href={profileLink} className="text-sm font-bold text-white hover:text-primary transition-colors cursor-pointer">{username}</Link>

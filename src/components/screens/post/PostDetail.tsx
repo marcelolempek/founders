@@ -19,7 +19,7 @@ import { useBookmarks } from '@/lib/hooks/useBookmarks';
 import { useBoostPost } from '@/lib/hooks/useBoostPost';
 import { useNotify } from '@/components/ui/Toast';
 import { useViewerRole } from '@/lib/hooks/useViewerRole';
-import { getImageUrl, getR2Url } from '@/lib/images';
+import { getImageUrl, getR2Url, getPostImageUrl } from '@/lib/images';
 
 
 
@@ -256,14 +256,9 @@ export default function IndividualPostScreen1({ initialPostId, isModal = false }
                     {post.images && post.images.length > 0 ? (
                         <>
                             <PostGallery
-                                images={post.images.map(img => {
-                                    // R2: use getImageUrl helper
-                                    if (img.image_id) {
-                                        return getImageUrl(postId!, img.image_id, 'detail');
-                                    }
-                                    // Legacy Supabase
-                                    return getR2Url(img.url) || '';
-                                })}
+                                images={post.images.map(img =>
+                                    getPostImageUrl(post.id, img.image_id, img.url, 'feed')
+                                )}
                                 price={isSalePost ? formatCurrency(post.price || 0, post.currency) : undefined}
                                 conditionLabel={isSalePost ? (translateCondition(post.condition) || undefined) : undefined}
                                 isTrade={false}
@@ -378,7 +373,14 @@ export default function IndividualPostScreen1({ initialPostId, isModal = false }
                     <Link href={`/profile/${post.user_id}`} className="p-5 hover:bg-white/5 transition-colors cursor-pointer group block">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="size-14 rounded-full bg-cover bg-center border-2 border-white/10" style={{ backgroundImage: `url("${getR2Url(post.user?.avatar_url) || '/images/default-avatar.png'}")` }}></div>
+                                <div className="size-14 rounded-full border-2 border-white/10 overflow-hidden">
+                                    <img
+                                        src={getR2Url(post.user?.avatar_url) || '/images/default-avatar.png'}
+                                        alt={post.user?.username || 'User'}
+                                        className="w-full h-full object-cover"
+                                        referrerPolicy="no-referrer"
+                                    />
+                                </div>
                                 <div className="flex flex-col">
                                     <span className="text-white font-bold text-lg group-hover:text-primary transition-colors">{post.user?.username}</span>
                                     <div className="mt-1">

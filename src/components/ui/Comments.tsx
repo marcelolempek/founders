@@ -165,9 +165,18 @@ export const Comments = (props: CommentsProps) => {
                 <div className="flex gap-3">
                     <Link
                         href={profileLink}
-                        className={`${depth > 0 ? 'size-6' : 'size-8'} rounded-full bg-cover bg-center border border-white/10 flex-shrink-0 shadow-sm hover:border-primary transition-colors block`}
-                        style={{ backgroundImage: `url("${getR2Url(comment.userAvatar)}")` }}
-                    ></Link>
+                        className={`${depth > 0 ? 'size-6' : 'size-8'} rounded-full border border-white/10 flex-shrink-0 shadow-sm hover:border-primary transition-colors block overflow-hidden`}
+                    >
+                        <img
+                            src={getR2Url(comment.userAvatar) || '/images/default-avatar.png'}
+                            alt={comment.userName}
+                            className="size-full object-cover"
+                            referrerPolicy="no-referrer"
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                            }}
+                        />
+                    </Link>
                     <div className="flex-1 flex flex-col">
                         <div className="flex items-center gap-2">
                             <Link
@@ -258,9 +267,18 @@ export const Comments = (props: CommentsProps) => {
             {showInput && (
                 <div className={`flex items-center gap-3 ${displayedComments.length > 0 ? 'mt-5 pt-3 border-t border-white/5' : ''}`}>
                     <div
-                        className="size-8 rounded-full bg-cover bg-center border border-white/10 flex-shrink-0"
-                        style={{ backgroundImage: `url("${getR2Url(currentUser?.avatar_url) || '/images/default-avatar.png'}")` }}
-                    ></div>
+                        className="size-8 rounded-full border border-white/10 flex-shrink-0 overflow-hidden"
+                    >
+                        <img
+                            src={getR2Url(currentUser?.avatar_url) || '/images/default-avatar.png'}
+                            alt="Your avatar"
+                            className="size-full object-cover"
+                            referrerPolicy="no-referrer"
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                            }}
+                        />
+                    </div>
                     <div className="flex-1 relative">
                         <input
                             value={replyingTo === null ? replyText : ''}

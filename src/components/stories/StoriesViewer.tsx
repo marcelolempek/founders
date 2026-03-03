@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
-import { getImageUrl, getR2Url } from '@/lib/images';
+import { getImageUrl, getR2Url, getPostImageUrl } from '@/lib/images';
 import Link from 'next/link';
 
 
@@ -117,13 +117,7 @@ export function StoriesViewer({ users, initialUserId, isOpen, onClose }: Stories
                     .filter((post: any) => post.images && post.images.length > 0)
                     .map((post: any) => {
                         const coverImg = post.images.find((img: any) => img.is_cover) || post.images[0];
-                        let imageUrl = '';
-
-                        if (coverImg.image_id) {
-                            imageUrl = getImageUrl(post.id, coverImg.image_id, 'feed');
-                        } else {
-                            imageUrl = getR2Url(coverImg.url);
-                        }
+                        const imageUrl = getPostImageUrl(post.id, coverImg.image_id, coverImg.url, 'feed');
 
                         return {
                             id: post.id,
@@ -280,9 +274,14 @@ export function StoriesViewer({ users, initialUserId, isOpen, onClose }: Stories
                     <div className="flex items-center justify-between pointer-events-auto">
                         <Link href={`/profile/${currentUser.id}`} className="flex items-center gap-3" onClick={onClose}>
                             <div className="size-10 rounded-full overflow-hidden border-2 border-white">
-                                <div
-                                    className="size-full bg-cover bg-center"
-                                    style={{ backgroundImage: `url("${getR2Url(currentUser.avatar_url) || '/images/default-avatar.png'}")` }}
+                                <img
+                                    src={getR2Url(currentUser.avatar_url) || '/images/default-avatar.png'}
+                                    alt={currentUser.username}
+                                    className="size-full object-cover"
+                                    referrerPolicy="no-referrer"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                                    }}
                                 />
                             </div>
                             <span className="text-white font-semibold flex flex-col leading-tight">

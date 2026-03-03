@@ -184,7 +184,15 @@ export default function PublicProfile({ userId }: PublicProfileProps) {
                     <div className="flex flex-col items-center gap-3 text-center">
                         <div className="relative">
                             <div className="w-28 h-28 rounded-full border-4 border-card-dark bg-card-dark shadow-xl overflow-hidden">
-                                <div className="w-full h-full bg-center bg-cover" style={{ backgroundImage: `url('${getR2Url(profile.avatar_url) || '/images/default-avatar.png'}')` }}></div>
+                                <img
+                                    src={getR2Url(profile.avatar_url) || '/images/default-avatar.png'}
+                                    alt={profile.username}
+                                    className="size-full object-cover"
+                                    referrerPolicy="no-referrer"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                                    }}
+                                />
                             </div>
                             <div className="absolute bottom-1 right-1 size-5 rounded-full bg-primary border-4 border-white"></div>
                         </div>

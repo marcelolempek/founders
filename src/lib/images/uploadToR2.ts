@@ -50,6 +50,6 @@ export async function uploadImageVariantsToR2(
     await Promise.all([
         uploadBlobToR2(`posts/${postId}/thumb/${imageId}.webp`, variants.thumb),
         uploadBlobToR2(`posts/${postId}/feed/${imageId}.webp`, variants.feed),
-        uploadBlobToR2(`posts/${postId}/detail/${imageId}.webp`, variants.detail),
+        uploadBlobToR2(`posts/${postId}/feed/${imageId}.webp`, variants.detail),
     ]);
 }

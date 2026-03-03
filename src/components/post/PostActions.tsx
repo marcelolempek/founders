@@ -82,8 +82,8 @@ export const PostActions = ({
 
                 // Construct message with clearer formatting
                 const message = postTitle
-                    ? `Olá ${contact.username}, tenho interesse no seu anúncio "${postTitle}" publicado no Empreendedores de Cristo.\n\nLink do item: ${postUrl}`
-                    : `Olá ${contact.username}, tenho interesse no seu anúncio publicado no Empreendedores de Cristo.\n\nLink do item: ${postUrl}`;
+                    ? `Olá ${contact.username}, tenho interesse no seu anúncio "${postTitle}" publicado no Empreendedores de Cristo.`
+                    : `Olá ${contact.username}, tenho interesse no seu anúncio publicado no Empreendedores de Cristo.`;
 
                 window.open(`https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
                 return;

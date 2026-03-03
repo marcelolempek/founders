@@ -40,13 +40,40 @@ export function getAvatarUrl(userId: string, avatarUrl?: string | null): string 
     }
 
     // Caso contrário, assume que avatarUrl é apenas o ID e constrói o path
-    const version = new Date().getTime();
-    return getR2Url(`avatars/${userId}.webp?v=${version}`);
+    return getR2Url(`avatars/${userId}.webp`);
 }
 
 /**
  * Get public URL for an image stored in R2
  */
+/**
+ * Get the best available URL for a post image, prioritizing R2 but falling back
+ * to legacy URLs correctly.
+ */
+export function getPostImageUrl(
+    postId: string,
+    image_id: string | null | undefined,
+    url: string | null | undefined,
+    variant: ImageVariant = 'feed'
+): string {
+    // 1. If we have image_id and either NO url or URL is an Unsplash placeholder
+    if (image_id && (!url || url.includes('unsplash.com'))) {
+        return getImageUrl(postId, image_id, variant);
+    }
+
+    // 2. If we have a URL (real legacy or external), use it
+    if (url) {
+        return getR2Url(url);
+    }
+
+    // 3. Fallback to image_id if we have nothing else
+    if (image_id) {
+        return getImageUrl(postId, image_id, variant);
+    }
+
+    return '';
+}
+
 export function getImageUrl(
     postId: string,
     imageIdOrUrl: string,
@@ -61,9 +88,8 @@ export function getImageUrl(
         return getR2Url(imageIdOrUrl);
     }
 
-    // Também aplicamos cache busting aqui para fotos de posts editados
-    const version = new Date().getTime();
-    return getR2Url(`posts/${postId}/${variant}/${imageIdOrUrl}.webp?v=${version}`);
+    // Removal of cache busting query string as it causes 404s on some R2 setups
+    return getR2Url(`posts/${postId}/${variant}/${imageIdOrUrl}.webp`);
 }
 
 export function getImageUrls(
