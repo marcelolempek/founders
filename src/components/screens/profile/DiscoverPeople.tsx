@@ -13,6 +13,7 @@ interface Profile {
     username: string;
     avatar_url: string;
     bio: string;
+    profession?: string | null;
     is_verified?: boolean;
 }
 
@@ -141,6 +142,49 @@ export default function DiscoverPeople() {
         loadData();
     }, []);
 
+    // Effect to perform server-side search when searchQuery changes
+    useEffect(() => {
+        if (!hasLoadedRef.current) return;
+
+        const timer = setTimeout(async () => {
+            setLoading(true);
+            try {
+                let query = supabase
+                    .from('profiles')
+                    .select('*')
+                    .limit(50);
+
+                if (searchQuery.trim()) {
+                    query = query.or(`username.ilike.%${searchQuery.trim()}%,bio.ilike.%${searchQuery.trim()}%,profession.ilike.%${searchQuery.trim()}%`);
+                }
+
+                if (currentUserId) {
+                    query = query.neq('id', currentUserId);
+                }
+
+                const { data: suggestions } = await query as { data: any[] | null };
+
+                let cleanSuggestions = suggestions || [];
+                if (currentUserId) {
+                    const excludeIds = new Set([
+                        ...followingUsers.map(u => u.id),
+                        ...followBackUsers.map(u => u.id),
+                        currentUserId
+                    ]);
+                    cleanSuggestions = suggestions?.filter(p => !excludeIds.has(p.id)) || [];
+                }
+
+                setSuggestedUsers(cleanSuggestions as Profile[]);
+            } catch (error) {
+                console.error("Error searching:", error);
+            } finally {
+                setLoading(false);
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [searchQuery, currentUserId, followingUsers, followBackUsers]);
+
     const handleFollow = async (targetId: string) => {
         if (!currentUserId) return;
 
@@ -180,10 +224,25 @@ export default function DiscoverPeople() {
         }
     };
 
-    // Filter suggestions based on Search Query
+    // Filter based on Search Query
+    const queryLower = searchQuery.toLowerCase();
+
     const filteredSuggestions = suggestedUsers.filter(user =>
-        user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (user.bio && user.bio.toLowerCase().includes(searchQuery.toLowerCase()))
+        user.username.toLowerCase().includes(queryLower) ||
+        (user.bio && user.bio.toLowerCase().includes(queryLower)) ||
+        (user.profession && user.profession.toLowerCase().includes(queryLower))
+    );
+
+    const filteredFollowBack = followBackUsers.filter(user =>
+        user.username.toLowerCase().includes(queryLower) ||
+        (user.bio && user.bio.toLowerCase().includes(queryLower)) ||
+        (user.profession && user.profession.toLowerCase().includes(queryLower))
+    );
+
+    const filteredFollowing = followingUsers.filter(user =>
+        user.username.toLowerCase().includes(queryLower) ||
+        (user.bio && user.bio.toLowerCase().includes(queryLower)) ||
+        (user.profession && user.profession.toLowerCase().includes(queryLower))
     );
 
     return (
@@ -201,7 +260,7 @@ export default function DiscoverPeople() {
                             </span>
                             <input
                                 type="text"
-                                placeholder="Pesquise por aliados"
+                                placeholder="Pesquise por profissão"
                                 className="w-full bg-[#1D4165] text-white text-sm rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-slate-400 transition-all border border-white/5 shadow-inner"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -215,13 +274,13 @@ export default function DiscoverPeople() {
             <main className="max-w-4xl mx-auto w-full px-4 mt-6 flex flex-col gap-8">
 
                 {/* 1. Follow Back Section */}
-                {followBackUsers.length > 0 && (
+                {filteredFollowBack.length > 0 && (
                     <section>
                         <div className="flex justify-between items-center mb-5">
                             <h2 className="text-xl font-bold text-white">Contas para seguir de volta</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {followBackUsers.map(user => (
+                            {filteredFollowBack.map(user => (
                                 <div key={user.id} className="flex items-center justify-between p-4 bg-[#1D4165] rounded-xl border border-white/5 hover:border-white/10 transition-all">
                                     <Link href={`/profile/${user.id}`} className="flex items-center gap-3 flex-1 min-w-0">
                                         <div
@@ -235,7 +294,7 @@ export default function DiscoverPeople() {
                                                     <span className="material-symbols-outlined text-blue-500 text-[14px] filled flex-shrink-0">verified</span>
                                                 )}
                                             </div>
-                                            <span className="text-xs text-slate-400 truncate">{user.bio || 'Aliado do Reino'}</span>
+                                            <span className="text-xs text-slate-400 truncate">{user.profession || user.bio || 'Aliado do Reino'}</span>
                                         </div>
                                     </Link>
                                     <div className="flex items-center gap-2 ml-3">
@@ -253,13 +312,13 @@ export default function DiscoverPeople() {
                 )}
 
                 {/* 2. Following Section (NEW) */}
-                {followingUsers.length > 0 && (
+                {filteredFollowing.length > 0 && (
                     <section>
                         <div className="flex justify-between items-center mb-5">
                             <h2 className="text-xl font-bold text-white">Pessoas que você segue</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {followingUsers.map(user => (
+                            {filteredFollowing.map(user => (
                                 <div key={user.id} className="flex items-center justify-between p-4 bg-[#1D4165] rounded-xl border border-white/5 transition-all">
                                     <Link href={`/profile/${user.id}`} className="flex items-center gap-3 flex-1 min-w-0">
                                         <div
@@ -273,7 +332,7 @@ export default function DiscoverPeople() {
                                                     <span className="material-symbols-outlined text-blue-500 text-[14px] filled flex-shrink-0">verified</span>
                                                 )}
                                             </div>
-                                            <span className="text-xs text-slate-400 truncate">{user.bio || 'Seguindo'}</span>
+                                            <span className="text-xs text-slate-400 truncate">{user.profession || user.bio || 'Seguindo'}</span>
                                         </div>
                                     </Link>
                                     <div className="flex items-center gap-2 ml-3">
@@ -314,7 +373,7 @@ export default function DiscoverPeople() {
                                                 <span className="material-symbols-outlined text-blue-500 text-[14px] filled flex-shrink-0">verified</span>
                                             )}
                                         </div>
-                                        {user.bio && <span className="text-xs text-slate-400 truncate">{user.bio}</span>}
+                                        {(user.profession || user.bio) && <span className="text-xs text-slate-400 truncate">{user.profession || user.bio}</span>}
                                     </div>
                                 </Link>
                                 <div className="flex items-center gap-3 ml-3">

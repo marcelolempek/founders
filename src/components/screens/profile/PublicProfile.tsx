@@ -67,7 +67,7 @@ export default function PublicProfile({ userId }: PublicProfileProps) {
     if (profileLoading || profileError || !profile) {
         if (profileLoading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary"></div></div>;
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center text-slate-900 gap-4">
+            <div className="min-h-screen flex flex-col items-center justify-center text-white gap-4">
                 <span className="material-symbols-outlined text-4xl text-gray-500">person_off</span>
                 <h2 className="text-xl font-bold">Usuário não encontrado</h2>
                 <Link href="/" className="text-primary hover:underline">Voltar ao Feed</Link>
@@ -189,7 +189,7 @@ export default function PublicProfile({ userId }: PublicProfileProps) {
                             <div className="absolute bottom-1 right-1 size-5 rounded-full bg-primary border-4 border-white"></div>
                         </div>
                         <div className="flex flex-col items-center">
-                            <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-1">
+                            <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-1">
                                 @{profile.username}
                                 {profile.is_verified && (
                                     <span className="material-symbols-outlined text-primary text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
@@ -215,17 +215,17 @@ export default function PublicProfile({ userId }: PublicProfileProps) {
 
                     <div className="flex w-full max-w-sm justify-around items-center py-2">
                         <div className="flex flex-col items-center justify-center">
-                            <span className="text-lg font-bold text-slate-900">{posts.length}</span>
+                            <span className="text-lg font-bold text-white">{posts.length}</span>
                             <span className="text-xs text-text-secondary font-medium">Posts</span>
                         </div>
                         <div className="w-px h-8 bg-slate-200/50"></div>
                         <Link href={`/profile/followers?id=${profile.id}`} className="flex flex-col items-center justify-center hover:text-primary transition-colors">
-                            <span className="text-lg font-bold text-slate-900">{formatFollowerCount(profile.followers_count || 0)}</span>
+                            <span className="text-lg font-bold text-white">{formatFollowerCount(profile.followers_count || 0)}</span>
                             <span className="text-xs text-text-secondary font-medium">Seguidores</span>
                         </Link>
                         <div className="w-px h-8 bg-slate-200/50"></div>
                         <Link href={`/profile/following?id=${profile.id}`} className="flex flex-col items-center justify-center hover:text-primary transition-colors">
-                            <span className="text-lg font-bold text-slate-900">{formatFollowerCount(profile.following_count || 0)}</span>
+                            <span className="text-lg font-bold text-white">{formatFollowerCount(profile.following_count || 0)}</span>
                             <span className="text-xs text-text-secondary font-medium">Seguindo</span>
                         </Link>
                     </div>
@@ -236,7 +236,7 @@ export default function PublicProfile({ userId }: PublicProfileProps) {
                                 onClick={handleFollowToggle}
                                 disabled={socialLoading}
                                 className={`flex-1 py-2.5 px-4 rounded-lg font-semibold transition-all active:scale-95 text-sm border flex items-center justify-center gap-2 ${isFollowing
-                                    ? "bg-white/[0.08] hover:bg-white/[0.12] text-slate-900 border-white/10"
+                                    ? "bg-white/[0.08] hover:bg-white/[0.12] text-white border-white/10"
                                     : "bg-primary text-white border-primary/20 hover:bg-primary/90"
                                     }`}
                             >
@@ -257,7 +257,7 @@ export default function PublicProfile({ userId }: PublicProfileProps) {
                         <div className="flex w-full max-w-md gap-3">
                             <Link
                                 href="/profile/profile"
-                                className="flex-1 bg-white/[0.08] hover:bg-white/[0.12] text-slate-900 font-semibold py-2.5 px-4 rounded-lg transition-all active:scale-95 text-sm border border-white/10 flex items-center justify-center gap-2"
+                                className="flex-1 bg-white/[0.08] hover:bg-white/[0.12] text-white font-semibold py-2.5 px-4 rounded-lg transition-all active:scale-95 text-sm border border-white/10 flex items-center justify-center gap-2"
                             >
                                 <span className="material-symbols-outlined text-[20px]">person</span>
                                 Ver meu Painel
@@ -266,7 +266,7 @@ export default function PublicProfile({ userId }: PublicProfileProps) {
                     )}
                 </div>
 
-                <div className="sticky top-16 z-30 mt-8 bg-white pt-2 pb-4">
+                <div className="sticky top-16 z-30 mt-8 pt-2 pb-4 bg-transparent">
                     <Tabs tabs={profileTabs} defaultTab="sales">
                         <TabPanel id="sales">
                             {postsLoading ? (
@@ -378,7 +378,7 @@ export default function PublicProfile({ userId }: PublicProfileProps) {
                                         {/* Review Input Section */}
                                         {!isMe && !userHasReviewed && (
                                             <div className="mb-8 bg-card-dark p-4 rounded-xl border border-slate-200/50 shadow-sm">
-                                                <h4 className="text-slate-900 font-bold mb-3">Avalie sua experiência</h4>
+                                                <h4 className="text-white font-bold mb-3">Avalie sua experiência</h4>
 
                                                 <div className="flex gap-1 mb-4">
                                                     {[1, 2, 3, 4, 5].map((star) => (
@@ -411,7 +411,7 @@ export default function PublicProfile({ userId }: PublicProfileProps) {
                                                             value={newReviewText}
                                                             onChange={(e) => setNewReviewText(e.target.value)}
                                                             placeholder={`Escreva uma avaliação sobre @${profile.username}...`}
-                                                            className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-900 focus:ring-1 focus:ring-primary outline-none transition-all pr-20"
+                                                            className="w-full bg-white/10 border border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-white focus:ring-1 focus:ring-primary outline-none transition-all pr-20"
                                                             onKeyDown={(e) => e.key === 'Enter' && handleAddReview()}
                                                             disabled={isSubmittingReview}
                                                         />

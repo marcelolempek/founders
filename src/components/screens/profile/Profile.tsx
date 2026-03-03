@@ -17,7 +17,7 @@ import { supabase, getCurrentUser } from '@/lib/supabase';
 import { toast } from '@/components/ui/Toast';
 // IMPORTANTE: Importar o contexto de usuário para pegar os dados do Google
 import { useUser } from '@/context/UserContext';
-import { getR2Url } from '@/lib/images';
+import { getR2Url, getBestAvatar } from '@/lib/images';
 
 export default function ProfileScreen() {
     const { user } = useUser(); // Pegando o usuário logado via Google
@@ -29,7 +29,7 @@ export default function ProfileScreen() {
     const { reviews, averageRating, distribution, loading: reviewsLoading } = useReviews(profile?.id);
 
     // MUDANÇA AQUI: Definimos a foto do Google como prioridade absoluta
-    const googlePhoto = getR2Url(user?.user_metadata?.avatar_url) || '/images/default-avatar.png';
+    const userAvatar = getBestAvatar(profile, user);
 
 
     const saleListings = posts.filter(p => p.type === 'sale' && p.status === 'active');
@@ -126,11 +126,17 @@ export default function ProfileScreen() {
                     <div className="flex flex-col items-center gap-3 text-center">
                         <div className="relative">
                             <div className="w-28 h-28 rounded-full border-4 border-slate-100 bg-slate-200 shadow-xl overflow-hidden">
-                                {/* AQUI: Substituímos profile.avatar_url por googlePhoto */}
-                                <div
-                                    className="w-full h-full bg-center bg-cover"
-                                    style={{ backgroundImage: `url('${googlePhoto}')` }}
-                                ></div>
+                                <div className="w-full h-full bg-slate-200">
+                                    <img
+                                        src={userAvatar}
+                                        alt="Profile"
+                                        className="w-full h-full object-cover"
+                                        referrerPolicy="no-referrer"
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                                        }}
+                                    />
+                                </div>
                             </div>
                             <div className="absolute bottom-1 right-1 size-5 rounded-full bg-primary border-4 border-white"></div>
                         </div>

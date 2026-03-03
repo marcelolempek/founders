@@ -45,7 +45,7 @@ export const PostGallery = ({
             {/* Main Image - Natural Height */}
             <img
                 src={images[currentIndex]}
-                alt="Post content"
+                alt="Imagem do produto"
                 className="w-full h-auto max-h-[75vh] object-contain"
                 onClick={handleGalleryClick}
             // If it's a gallery, we might want to prevent default click navigation if used for zooming, but here it opens details

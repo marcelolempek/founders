@@ -120,9 +120,9 @@ export function StoriesViewer({ users, initialUserId, isOpen, onClose }: Stories
                         let imageUrl = '';
 
                         if (coverImg.image_id) {
-                            imageUrl = getImageUrl(post.id, coverImg.image_id, 'detail');
-                        } else if (coverImg.url) {
-                            imageUrl = coverImg.url;
+                            imageUrl = getImageUrl(post.id, coverImg.image_id, 'feed');
+                        } else {
+                            imageUrl = getR2Url(coverImg.url);
                         }
 
                         return {
@@ -361,7 +361,7 @@ export function StoriesViewer({ users, initialUserId, isOpen, onClose }: Stories
 
                         {/* Image */}
                         <img
-                            src={getR2Url(stories[currentIndex]?.image_url)}
+                            src={stories[currentIndex]?.image_url}
                             alt={stories[currentIndex]?.title}
                             className="w-full h-full object-contain pointer-events-none select-none"
                         />

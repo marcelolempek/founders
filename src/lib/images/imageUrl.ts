@@ -1,19 +1,24 @@
 import { ImageVariant } from './imageSizes';
 
 export function getR2Url(path: string | null | undefined): string {
-    if (!path) return '';
-    if (path.startsWith('http') || path.startsWith('data:')) return path;
+    if (!path || typeof path !== 'string') return '';
+
+    // Trim to avoid issues with accidental spaces in DB
+    const cleanPathInput = path.trim();
+
+    // If it's already a full URL or data URI, return as is
+    if (cleanPathInput.startsWith('http') || cleanPathInput.startsWith('data:')) return cleanPathInput;
 
     const baseUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
-    if (!baseUrl || path.startsWith('/images/')) {
+    if (!baseUrl || cleanPathInput.startsWith('/images/')) {
         // Local asset or no baseUrl, stay relative
-        return path.startsWith('/') ? path : `/${path}`;
+        return cleanPathInput.startsWith('/') ? cleanPathInput : `/${cleanPathInput}`;
     }
 
     const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    const finalNormalizedPath = cleanPathInput.startsWith('/') ? cleanPathInput : `/${cleanPathInput}`;
 
-    return `${cleanBase}${cleanPath}`;
+    return `${cleanBase}${finalNormalizedPath}`;
 }
 
 /**
@@ -70,4 +75,26 @@ export function getImageUrls(
         feed: getImageUrl(postId, imageIdOrUrl, 'feed'),
         detail: getImageUrl(postId, imageIdOrUrl, 'detail'),
     };
+}
+export function getBestAvatar(profile?: any, user?: any): string {
+    // 1. Try profile from database first (highest priority)
+    if (profile?.avatar_url) {
+        return getR2Url(profile.avatar_url);
+    }
+
+    // 2. Try various user metadata locations (Supabase standard)
+    const meta = user?.user_metadata || {};
+    const metaAvatar = meta.avatar_url || meta.picture || meta.photoURL;
+    if (metaAvatar) {
+        return getR2Url(metaAvatar);
+    }
+
+    // 3. Try direct user properties (some variants/SDKs)
+    const directAvatar = user?.avatar_url || user?.picture || user?.photoURL;
+    if (directAvatar) {
+        return getR2Url(directAvatar);
+    }
+
+    // 4. Absolute fallback
+    return '/images/default-avatar.png';
 }

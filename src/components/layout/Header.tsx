@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useUser as useAuth } from '@/context/UserContext';
 import { useNotifications } from '@/lib/hooks/useNotifications';
 import { signOut } from '@/lib/supabase';
-import { getR2Url } from '@/lib/images/imageUrl';
+import { getR2Url, getBestAvatar } from '@/lib/images';
 
 export function Header() {
     const { user, profile } = useAuth();
@@ -16,9 +16,7 @@ export function Header() {
     const [showUserMenu, setShowUserMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    const userAvatar =
-        getR2Url(user?.user_metadata?.avatar_url) ||
-        '/images/default-avatar.png';
+    const userAvatar = getBestAvatar(profile, user);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -50,9 +48,9 @@ export function Header() {
                     <Link href="/" className="flex items-center gap-3 group">
 
                         {/* IMAGEM NO LUGAR DO ÍCONE */}
-                        <div className="relative w-10 h-10 group-hover:scale-105 transition-transform">
+                        <div className="relative w-40 h-40 group-hover:scale-105 transition-transform">
                             <Image
-                                src="/logo.png"
+                                src="/logo2.png"
                                 alt="Empreendedores de Cristo"
                                 fill
                                 className="object-contain"
@@ -60,18 +58,18 @@ export function Header() {
                             />
                         </div>
 
-                        <div className="flex flex-col">
+                        {/* <div className="flex flex-col">
                             <span className="text-white font-bold text-lg leading-none">
                                 Empreendedores de Cristo
                             </span>
                             <span className="text-slate-400 font-medium text-xs mt-1">
                                 Conectando negócios e propósitos
                             </span>
-                        </div>
+                        </div> */}
                     </Link>
 
                     {/* Search Bar (Desktop) */}
-                    <div className="hidden lg:flex flex-1 max-w-md">
+                    {/* <div className="hidden lg:flex flex-1 max-w-md">
                         <div className="relative w-full">
                             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">
                                 search
@@ -82,7 +80,7 @@ export function Header() {
                                 className="w-full bg-[#1D4165] border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all shadow-inner"
                             />
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Desktop Actions */}
                     <div className="flex items-center gap-2 md:gap-4">
@@ -106,9 +104,18 @@ export function Header() {
                                 <div className="relative" ref={menuRef}>
                                     <button
                                         onClick={() => setShowUserMenu(!showUserMenu)}
-                                        className="bg-center bg-no-repeat bg-cover rounded-full size-9 border-2 border-white/10 hover:border-primary transition-all active:scale-95 shadow-lg shadow-black/20"
-                                        style={{ backgroundImage: `url("${userAvatar}")` }}
-                                    />
+                                        className="relative rounded-full size-9 border-2 border-white/10 hover:border-primary transition-all active:scale-95 shadow-lg shadow-black/20 overflow-hidden group"
+                                    >
+                                        <img
+                                            src={userAvatar}
+                                            alt="User avatar"
+                                            className="size-full object-cover"
+                                            referrerPolicy="no-referrer"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                                            }}
+                                        />
+                                    </button>
 
                                     {showUserMenu && (
                                         <div

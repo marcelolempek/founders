@@ -6,4 +6,4 @@ export { IMAGE_SIZES, type ImageVariant, type ImageSizeConfig } from './imageSiz
 export { resizeImage } from './resizeImage';
 export { generateImageVariants } from './generateVariants';
 export { uploadBlobToR2, uploadImageVariantsToR2 } from './uploadToR2';
-export { getImageUrl, getImageUrls, getAvatarUrl, getR2Url } from './imageUrl';
+export { getImageUrl, getImageUrls, getAvatarUrl, getR2Url, getBestAvatar } from './imageUrl';

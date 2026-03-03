@@ -21,6 +21,7 @@ export default function EditProfilePage() {
     const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
     const [name, setName] = useState('');
+    const [profession, setProfession] = useState('');
     const [bio, setBio] = useState('');
     const [website, setWebsite] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
@@ -41,6 +42,7 @@ export default function EditProfilePage() {
             if (p) {
                 setProfile(p);
                 setName(p.username);
+                setProfession(p.profession || '');
                 setBio(p.bio || '');
                 setWebsite(p.website || '');
                 setAvatarUrl(p.avatar_url || '');
@@ -120,6 +122,7 @@ export default function EditProfilePage() {
                 // @ts-ignore - profiles table exists
                 .update({
                     username: name.trim(),
+                    profession: profession.trim() || null,
                     bio: bio.trim() || null,
                     website: website.trim() || null,
                     phone: phone.trim() || null,
@@ -207,6 +210,17 @@ export default function EditProfilePage() {
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
+                                    className="w-full h-10 bg-slate-100 border border-primary/50 rounded-lg px-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                                />
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <label className="text-sm font-medium text-slate-900">Profissão</label>
+                                <input
+                                    type="text"
+                                    value={profession}
+                                    onChange={(e) => setProfession(e.target.value)}
+                                    placeholder="Ex: Engenheiro, Designer, Logista..."
                                     className="w-full h-10 bg-slate-100 border border-primary/50 rounded-lg px-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                                 />
                             </div>

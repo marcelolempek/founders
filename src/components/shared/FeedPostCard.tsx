@@ -14,7 +14,7 @@ import { useNavigation } from '@/context/NavigationContext';
 import { useUser } from '@/context/UserContext';
 import { toast } from '@/components/ui/Toast';
 import { useViewerRole } from '@/lib/hooks/useViewerRole';
-import { getR2Url } from '@/lib/images';
+import { getR2Url, getBestAvatar } from '@/lib/images';
 
 
 interface FeedPostCardProps {
@@ -101,7 +101,7 @@ export const FeedPostCard = ({
         ? `${location}${location ? ' • ' : ''}${formattedDistance}`
         : location;
     const { openPostDetail } = useNavigation();
-    const { user } = useUser(); // Use cached user from context
+    const { user, profile } = useUser(); // Use cached user and profile from context
 
     // Auto-calculate viewer role
     const viewerRole = useViewerRole(authorId || '');
@@ -178,11 +178,6 @@ export const FeedPostCard = ({
         }
         setShowComments(!showComments);
     };
-
-
-
-
-
 
 
     const handleAddComment = async (text: string) => {
@@ -312,10 +307,17 @@ export const FeedPostCard = ({
 
                 {/* Add Comment Input (Always visible) */}
                 <div className="flex items-center gap-3 mt-1 relative">
-                    <div
-                        className="size-6 rounded-full bg-cover bg-center flex-shrink-0"
-                        style={{ backgroundImage: `url("${getR2Url(user?.user_metadata?.avatar_url || user?.user_metadata?.picture) || '/images/default-avatar.png'}")` }}
-                    ></div>
+                    <div className="size-6 rounded-full bg-cover bg-center flex-shrink-0 overflow-hidden">
+                        <img
+                            src={getBestAvatar(profile, user)}
+                            alt="Your avatar"
+                            className="size-full object-cover"
+                            referrerPolicy="no-referrer"
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                            }}
+                        />
+                    </div>
                     <input
                         id={`comment-input-${postId}`}
                         type="text"

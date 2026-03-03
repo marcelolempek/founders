@@ -19,7 +19,7 @@ import type { FeedPost } from '@/lib/database.types';
 import { ConfirmModal } from '@/components/ui/Modal';
 import { useUpdatePostStatus } from '@/lib/hooks/usePosts';
 import { toast } from '@/components/ui/Toast';
-import { getR2Url } from '@/lib/images';
+import { getR2Url, getBestAvatar } from '@/lib/images';
 
 
 interface FeedPageData {
@@ -37,7 +37,7 @@ export default function FeedScreenHome1() {
     const { posts, loading, error, hasMore, loadMore, refresh } = useFeed({ limit: 20 });
     const { openCreatePost } = useNavigation();
     const { getFollowedUsers, followUser } = useSocial();
-    const { user, loading: authLoading } = useUser();
+    const { user, profile, loading: authLoading } = useUser();
     const [followedUsers, setFollowedUsers] = useState<any[]>([]);
     const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
     const [suggestedOffset, setSuggestedOffset] = useState(0);
@@ -257,18 +257,23 @@ export default function FeedScreenHome1() {
         <>
             <div className="min-h-screen flex flex-col">
                 <Header />
-                <main className="flex-1 max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-6 pt-6 px-0 sm:px-4 lg:px-8">
+                <main className="flex-1 max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-6 pt-6 px-4 sm:px-6 lg:px-8">
                     <SidebarLeft />
                     <section className="col-span-1 md:col-span-9 lg:col-span-6 flex flex-col gap-6 pb-20">
                         {/* Stories / Quick Actions Bar */}
-                        <div className="flex gap-4 overflow-x-auto pb-4 px-4 sm:px-0 [scrollbar-width:none] md:[scrollbar-width:thin] [&::-webkit-scrollbar]:hidden md:[&::-webkit-scrollbar]:block md:[&::-webkit-scrollbar]:h-2 md:[&::-webkit-scrollbar-thumb]:bg-slate-100 md:[&::-webkit-scrollbar-thumb]:rounded-full md:[&::-webkit-scrollbar-track]:bg-black/20">
+                        <div className="flex gap-4 overflow-x-auto pb-4 [scrollbar-width:none] md:[scrollbar-width:thin] [&::-webkit-scrollbar]:hidden md:[&::-webkit-scrollbar]:block md:[&::-webkit-scrollbar]:h-2 md:[&::-webkit-scrollbar-thumb]:bg-slate-100 md:[&::-webkit-scrollbar-thumb]:rounded-full md:[&::-webkit-scrollbar-track]:bg-black/20">
                             {/* Post Button (Your Story) */}
                             <button onClick={openCreatePost} className="flex flex-col items-center gap-2 min-w-[72px] cursor-pointer flex-shrink-0">
                                 <div className="size-[68px] rounded-full bg-[#1D4165] p-[2px] relative group border border-white/5">
                                     <div className="size-full rounded-full border-2 border-[#1D4165] bg-[#1D4165] overflow-hidden">
-                                        <div
-                                            className="size-full bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity"
-                                            style={{ backgroundImage: `url("${getR2Url(user?.user_metadata?.avatar_url) || '/images/default-avatar.png'}")` }}
+                                        <img
+                                            src={getBestAvatar(profile, user)}
+                                            alt="User profile"
+                                            className="size-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                            referrerPolicy="no-referrer"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).src = '/images/default-avatar.png';
+                                            }}
                                         />
                                     </div>
                                     <div className="absolute bottom-0 right-0 bg-primary rounded-full p-1 border-2 border-[#1D4165] z-10 flex items-center justify-center">
