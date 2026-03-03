@@ -6,10 +6,10 @@ import { getImageUrl } from '@/lib/images/imageUrl';
 import { getPostUrl } from '@/lib/utils/postUrl';
 
 interface PageProps {
-    params: {
+    params: Promise<{
         id: string;
         slug: string;
-    }
+    }>
 }
 
 async function getPost(id: string) {
@@ -32,7 +32,8 @@ async function getPost(id: string) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const post = await getPost(params.id);
+    const { id, slug } = await params;
+    const post = await getPost(id);
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://Empreendedores de Cristo.com';
     const r2PublicUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || '';
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             openGraph: {
                 title: 'Post não encontrado | Empreendedores de Cristo',
                 description: 'Este post não está disponível.',
-                url: `${siteUrl}/post/${params.id}/${params.slug}`,
+                url: `${siteUrl}/post/${id}/${slug}`,
                 siteName: 'Empreendedores de Cristo',
                 locale: 'pt_BR',
                 type: 'website',
@@ -71,7 +72,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const title = post.title || 'Post no Empreendedores de Cristo';
     const description = post.description?.substring(0, 160) || 'Confira este post no Empreendedores de Cristo';
     const username = (post.user as any)?.username || 'Empreendedores de Cristo';
-    const postUrl = `${siteUrl}/post/${params.id}/${params.slug}`;
+    const postUrl = `${siteUrl}/post/${id}/${slug}`;
 
     return {
         title: `${title} | Empreendedores de Cristo`,
@@ -107,7 +108,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
 }
 
-export default function PostPage({ params }: PageProps) {
+export default async function PostPage({ params }: PageProps) {
     // Redirect to short URL format (without slug)
-    redirect(getPostUrl(params.id));
+    const { id } = await params;
+    redirect(getPostUrl(id));
 }

@@ -6,6 +6,7 @@ interface LogoProps {
   width?: number
   height?: number
   className?: string
+  showTagline?: boolean
 }
 
 export default function Logo({
