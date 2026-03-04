@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   description: "A rede social e marketplace definitivos para empreendedores cristãos. Conecte-se, divulgue seus serviços e fortaleça seus negócios.",
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', type: 'image/svg+xml' },
       { url: '/favicon.ico', sizes: 'any' }
     ],
     apple: '/apple-touch-icon.png',
