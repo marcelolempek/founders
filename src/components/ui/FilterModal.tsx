@@ -22,15 +22,16 @@ interface FilterModalProps {
 }
 
 const categories = [
-    { id: 'rifles', label: 'Rifles' },
-    { id: 'pistols', label: 'Pistolas' },
-    { id: 'smgs', label: 'SMGs' },
-    { id: 'shotguns', label: 'Shotguns' },
-    { id: 'snipers', label: 'Snipers' },
-    { id: 'gear', label: 'Produtos/Serviços' },
-    { id: 'accessories', label: 'Acessórios' },
-    { id: 'parts', label: 'Peças' },
-    { id: 'clothing', label: 'Vestuário' },
+    { id: 'technology', label: 'Tecnologia' },
+    { id: 'services', label: 'Serviços' },
+    { id: 'consulting', label: 'Consultoria' },
+    { id: 'marketing', label: 'Marketing' },
+    { id: 'design', label: 'Design' },
+    { id: 'products', label: 'Produtos' },
+    { id: 'tools', label: 'Ferramentas' },
+    { id: 'networking', label: 'Networking' },
+    { id: 'legal', label: 'Jurídico' },
+    { id: 'other', label: 'Outros' },
 ];
 
 const conditions = [

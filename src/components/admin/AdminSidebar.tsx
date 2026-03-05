@@ -56,6 +56,7 @@ export default function AdminSidebar({ className = '', onClose }: AdminSidebarPr
 
                 <div className="px-2 mt-4 mb-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Plataforma</div>
 
+                <AdminNavLink href="/admin/tenants" icon="hub" label="Universos (Tenants)" />
                 <AdminNavLink href="/admin/analytics" icon="monitoring" label="Analytics" />
                 <AdminNavLink href="/admin/settings" icon="settings" label="Configurações" />
             </nav>

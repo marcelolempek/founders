@@ -9,7 +9,7 @@ import { getR2Url } from '@/lib/images';
 
 export function MyActiveListings() {
     const { listings, loading } = useMyActiveListings(4);
-    const { openPostDetail } = useNavigation();
+    const { openPostDetail, openCreatePost } = useNavigation();
 
     if (loading) {
         return (
@@ -26,8 +26,23 @@ export function MyActiveListings() {
         );
     }
 
-    if (listings.length === 0) {
-        return null; // Don't show if user has no active listings
+    if (!loading && listings.length === 0) {
+        return (
+            <div className="bg-[#1D4165] rounded-xl border border-white/10 p-5 mb-0 shadow-xl text-white">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-white font-bold text-sm">Seus Anúncios Ativos</h3>
+                </div>
+                <div className="text-center py-4 border border-dashed border-white/10 rounded-lg">
+                    <p className="text-xs text-slate-400 mb-2">Você não tem anúncios ativos no momento.</p>
+                    <button
+                        onClick={() => openCreatePost()}
+                        className="text-xs text-primary font-bold hover:underline"
+                    >
+                        Criar meu primeiro anúncio
+                    </button>
+                </div>
+            </div>
+        );
     }
 
     return (

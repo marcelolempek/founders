@@ -54,7 +54,7 @@ export function SuggestedSellers() {
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="text-white font-bold text-sm">Vendedores Sugeridos</h3>
                 </div>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 mt-6">
                     {[...Array(2)].map((_, i) => (
                         <div key={i} className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -71,8 +71,17 @@ export function SuggestedSellers() {
         );
     }
 
-    if (sellers.length === 0) {
-        return null; // Don't show if no suggestions
+    if (!loading && sellers.length === 0) {
+        return (
+            <div className="bg-[#1D4165] rounded-xl border border-white/10 p-5 shadow-xl">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-white font-bold text-sm">Vendedores Sugeridos</h3>
+                </div>
+                <div className="text-center py-4 border border-dashed border-white/10 rounded-lg">
+                    <p className="text-xs text-slate-400">Nenhuma sugestão disponível no momento.</p>
+                </div>
+            </div>
+        );
     }
 
     return (

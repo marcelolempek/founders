@@ -311,5 +311,51 @@ export const adminService = {
             message: `Sua solicitação de verificação (${type}) foi aprovada. O selo ficará ativo por 12 meses.`,
             is_read: false
         });
+    },
+
+    // Tenant Management
+    async getTenants() {
+        const { data, error } = await supabase
+            .from('tenants')
+            .select(`
+                *,
+                owner:profiles!tenants_owner_id_fkey(username, avatar_url)
+            `)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data || [];
+    },
+
+    async createTenant(tenantData: {
+        name: string;
+        slug: string;
+        description?: string;
+        is_private: boolean;
+        access_code?: string;
+        owner_id?: string;
+        avatar_url?: string;
+    }) {
+        const { data, error } = await supabase
+            .from('tenants')
+            .insert({
+                ...tenantData,
+                owner_id: tenantData.owner_id || null,
+                access_code: tenantData.access_code || null
+            })
+            .select()
+            .single();
+
+        if (error) throw error;
+        return data;
+    },
+
+    async deleteTenant(tenantId: string) {
+        const { error } = await supabase
+            .from('tenants')
+            .delete()
+            .eq('id', tenantId);
+
+        if (error) throw error;
     }
 };

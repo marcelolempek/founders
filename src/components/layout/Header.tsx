@@ -8,6 +8,7 @@ import { useUser as useAuth } from '@/context/UserContext';
 import { useNotifications } from '@/lib/hooks/useNotifications';
 import { signOut } from '@/lib/supabase';
 import { getR2Url, getBestAvatar } from '@/lib/images';
+import TenantSwitcher from './TenantSwitcher';
 
 export function Header() {
     const { user, profile } = useAuth();
@@ -42,12 +43,10 @@ export function Header() {
     return (
         <header className="sticky top-0 z-50 w-full bg-[#0E2741]/80 backdrop-blur-md border-b border-white/5">
             <div className="container mx-auto px-4">
-                <div className="flex h-16 items-center justify-between gap-4">
+                <div className="flex h-16 items-center justify-between">
 
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3 group">
-
-                        {/* IMAGEM NO LUGAR DO ÍCONE */}
                         <div className="relative w-40 h-40 group-hover:scale-105 transition-transform">
                             <Image
                                 src="/logo2.png"
@@ -57,35 +56,16 @@ export function Header() {
                                 priority
                             />
                         </div>
-
-                        {/* <div className="flex flex-col">
-                            <span className="text-white font-bold text-lg leading-none">
-                                Empreendedores de Cristo
-                            </span>
-                            <span className="text-slate-400 font-medium text-xs mt-1">
-                                Conectando negócios e propósitos
-                            </span>
-                        </div> */}
                     </Link>
 
-                    {/* Search Bar (Desktop) */}
-                    {/* <div className="hidden lg:flex flex-1 max-w-md">
-                        <div className="relative w-full">
-                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">
-                                search
-                            </span>
-                            <input
-                                type="text"
-                                placeholder="Buscar produtos, serviços ou pessoas..."
-                                className="w-full bg-[#1D4165] border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all shadow-inner"
-                            />
-                        </div>
-                    </div> */}
+                    {/* Right Actions */}
+                    <div className="flex items-center gap-3 md:gap-4">
 
-                    {/* Desktop Actions */}
-                    <div className="flex items-center gap-2 md:gap-4">
+                        {user && <TenantSwitcher />}
+
                         {user ? (
                             <>
+                                {/* Notifications */}
                                 <Link
                                     href="/notifications"
                                     className="relative p-2 text-slate-400 hover:text-white transition-colors"
@@ -93,6 +73,7 @@ export function Header() {
                                     <span className="material-symbols-outlined">
                                         notifications
                                     </span>
+
                                     {unreadCount > 0 && (
                                         <span className="absolute top-1.5 right-1.5 size-4 flex items-center justify-center bg-primary rounded-full text-[10px] font-bold text-white border border-[#0E2741]">
                                             {unreadCount > 99 ? '99+' : unreadCount}
@@ -100,7 +81,7 @@ export function Header() {
                                     )}
                                 </Link>
 
-                                {/* User Avatar Dropdown */}
+                                {/* Avatar */}
                                 <div className="relative" ref={menuRef}>
                                     <button
                                         onClick={() => setShowUserMenu(!showUserMenu)}
@@ -172,6 +153,7 @@ export function Header() {
                                 >
                                     Entrar
                                 </Link>
+
                                 <Link
                                     href="/auth/signup"
                                     className="hidden md:flex items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
@@ -181,6 +163,7 @@ export function Header() {
                             </div>
                         )}
                     </div>
+
                 </div>
             </div>
         </header>

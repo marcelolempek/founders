@@ -27,7 +27,11 @@ export default function Login() {
         <>
             {/* Background Layer */}
             <div className="fixed inset-0 z-0 bg-[#0e2741]">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent"></div>
+                <div
+                    className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-overlay"
+                    style={{ backgroundImage: "url('/entrepreneur_background_1772656875289.png')" }}
+                ></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0e2741]/50 via-[#0e2741]/80 to-[#0e2741]"></div>
             </div>
 
             {/* Main Content Container */}

@@ -205,7 +205,6 @@ interface CreatePostInput {
   neighborhood?: string | null;
 }
 
-// Hook for creating posts
 export function useCreatePost() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -218,9 +217,6 @@ export function useCreatePost() {
       const user = await getCurrentUser();
       if (!user) throw new Error('Você precisa estar logado');
 
-      // Rate limit check removed to allow unrestricted posting
-      const canPost = true;
-
       setProgress(10);
 
       // Generate post ID first (needed for R2 path structure)
@@ -231,9 +227,8 @@ export function useCreatePost() {
       for (let i = 0; i < input.images.length; i++) {
         const file = input.images[i];
 
-        // Use R2 storage (now imported statically)
+        // Use R2 storage
         const { imageId, error: uploadError } = await storage.uploadPostImageR2(postId, file);
-
         if (uploadError) throw new Error(uploadError);
 
         imageIds.push(imageId);
@@ -246,7 +241,7 @@ export function useCreatePost() {
       const { data: postData, error: insertError } = await supabase
         .from('posts')
         .insert({
-          id: postId, // Use pre-generated ID
+          id: postId,
           user_id: user.id,
           title: input.title.trim(),
           description: input.description.trim(),
@@ -259,7 +254,6 @@ export function useCreatePost() {
           type: input.type,
           status: 'active',
           ships_nationwide: input.ships_nationwide || false,
-          // Geocoding data
           latitude: input.latitude || null,
           longitude: input.longitude || null,
           postal_code: input.postal_code || null,

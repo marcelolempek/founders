@@ -17,9 +17,11 @@ export default function SignUpScreen() {
         <>
             {/* Background Layer */}
             <div className="fixed inset-0 z-0">
-                <div className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCDSe7Cr0vN6UOwS2yFLzwnQmkkYrObqL26ZDgcYns-2EAQ5I7YCkb0yfTmMpAZD6YYMxs6ltnEe11ox8_pcNXiv3SNhyYxPrBeiOgqW_jz1cBY2dhY54vXdcXB04gclu1xi4KsbIT7CCQRUVMgZiAbZf9dATZvB5_fElEMx-ndrraTe_7rabLzW-iC7-TO2CTS8m-Kj8LZHBYlg5TlVN8a58ZKQisSk6MGtUO7Yre-OVD7vYLmbkccIkC-4-EMsbcm0b_ZgwDQMz4g')" }}></div>
+                <div
+                    className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay"
+                    style={{ backgroundImage: "url('/entrepreneur_background_1772656875289.png')" }}
+                ></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-background-dark/90 via-background-dark/95 to-background-dark"></div>
-                <div className="absolute inset-0 bg-tactical-pattern opacity-10"></div>
             </div>
 
             {/* Main Content */}

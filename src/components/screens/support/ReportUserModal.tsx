@@ -28,7 +28,7 @@ const reportOptions: ReportOption[] = [
     {
         value: 'illegal',
         title: 'Item Proibido / Ilegal',
-        description: 'Armas de fogo reais, explosivos, drogas'
+        description: 'Serviços proibidos, conteúdo ilegal ou pirâmides financeiras'
     },
     {
         value: 'abusive',

@@ -15,7 +15,7 @@ export default function Footer() {
                 </div>
 
                 <div className="text-xs text-slate-500 font-small">
-                    © 2026 Empreendedores de Cristo • Conectando negócios e propósitos
+                    © 2026 Founders • Conectando negócios e propósitos
                 </div>
                 <div>
                     <h4 className="text-xs text-slate-400 transition-colors">Desenvolvido por HM Technology</h4>

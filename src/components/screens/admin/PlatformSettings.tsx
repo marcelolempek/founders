@@ -136,7 +136,7 @@ export default function AdminPanelInternal6() {
                                         <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Blacklisted Keywords</label>
                                         <span className="text-xs text-slate-500">Comma separated</span>
                                     </div>
-                                    <textarea className="w-full bg-gray-50 dark:bg-[#111621] border border-gray-200 dark:border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary dark:text-slate-900 placeholder-slate-400" rows={3}>scam, fraud, illegal, real-steel, firearm, explosives</textarea>
+                                    <textarea className="w-full bg-gray-50 dark:bg-[#111621] border border-gray-200 dark:border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary dark:text-slate-900 placeholder-slate-400" rows={3}>golpe, fraude, ilegal, pornografia, pirâmide financeiro, ofensa</textarea>
                                     <p className="text-xs text-slate-500 dark:text-slate-400">Posts containing these words will be automatically flagged for manual review.</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">

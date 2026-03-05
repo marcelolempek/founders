@@ -69,16 +69,16 @@ const UPLOAD_SLOTS: Record<BadgeType, UploadSlot[]> = {
         },
         {
             key: 'store_facade',
-            label: 'Foto da Fachada',
-            description: 'Mostrando a placa/nome da loja',
+            label: 'Foto da Fachada ou Escritório',
+            description: 'Mostrando a identificação do seu negócio',
             iconName: 'storefront',
             required: true
         },
         {
             key: 'store_interior',
-            label: 'Foto do Interior',
-            description: 'Mostrando produtos e estrutura',
-            iconName: 'shelves',
+            label: 'Foto do Interior/Workspace',
+            description: 'Mostrando sua estrutura de trabalho',
+            iconName: 'workspaces',
             required: true
         },
     ],

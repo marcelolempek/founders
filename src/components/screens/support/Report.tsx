@@ -14,7 +14,7 @@ const reportOptions: ReportOption[] = [
     {
         value: 'prohibited_item',
         title: 'Item Proibido',
-        description: 'Arma de fogo real, sem ponteira laranja, ou modificação ilegal'
+        description: 'Serviços ilegais, itens proibidos por lei, ou pirâmides financeiras'
     },
     {
         value: 'scam',
@@ -158,11 +158,10 @@ export default function ReportScreen({ postId: propPostId, onClose, isModal = fa
                     {reportOptions.map((option) => (
                         <label
                             key={option.value}
-                            className={`group relative flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all ${
-                                selectedReason === option.value
+                            className={`group relative flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all ${selectedReason === option.value
                                     ? 'border-primary bg-primary/5 dark:bg-primary/10'
                                     : 'border-gray-200 dark:border-[#3c4453] bg-gray-50 dark:bg-white hover:border-primary/50'
-                            }`}
+                                }`}
                         >
                             <div className="flex grow flex-col">
                                 <p className="text-sm font-bold text-gray-900 dark:text-slate-900">{option.title}</p>

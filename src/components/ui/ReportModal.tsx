@@ -15,7 +15,7 @@ const postReasons = [
     {
         id: 'prohibited',
         title: 'Item Proibido',
-        description: 'Arma de fogo real, sem ponta laranja ou modificação ilegal',
+        description: 'Serviços ilegais, itens proibidos por lei ou pirâmides financeiras',
         icon: 'report'
     },
     {

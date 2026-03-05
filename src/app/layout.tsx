@@ -3,11 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NavigationProvider } from "@/context/NavigationContext";
 import { UserProvider } from "@/context/UserContext";
+import { TenantProvider } from "@/context/TenantContext";
 import { PageStateProvider } from "@/context/PageStateContext";
 import { ToastProvider } from "@/components/ui/Toast";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import CreatePostModal from "@/components/shared/CreatePostModal";
-
+import TenantGuard from "@/components/shared/TenantGuard";
 import PostDetailModal from "@/components/shared/PostDetailModal";
 import Footer from "@/components/layout/Footer";
 
@@ -80,20 +81,23 @@ export default function RootLayout({
       >
         <ToastProvider>
           <UserProvider>
-            <PageStateProvider>
-              <NavigationProvider>
-                <div className="flex flex-col min-h-screen">
-                  <main className="flex-1">
-                    {children}
-                  </main>
-                  <Footer />
-                </div>
-                <MobileBottomNav />
-                <CreatePostModal />
-
-                <PostDetailModal />
-              </NavigationProvider>
-            </PageStateProvider>
+            <TenantProvider>
+              <PageStateProvider>
+                <NavigationProvider>
+                  <div className="flex flex-col min-h-screen">
+                    <TenantGuard>
+                      <main className="flex-1">
+                        {children}
+                      </main>
+                    </TenantGuard>
+                    <Footer />
+                  </div>
+                  <MobileBottomNav />
+                  <CreatePostModal />
+                  <PostDetailModal />
+                </NavigationProvider>
+              </PageStateProvider>
+            </TenantProvider>
           </UserProvider>
         </ToastProvider>
       </body>

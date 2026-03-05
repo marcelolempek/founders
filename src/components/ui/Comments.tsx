@@ -315,9 +315,9 @@ export const sampleComments: Comment[] = [
     {
         id: '1',
         userId: 'user-1',
-        userName: 'SniperWolf',
+        userName: 'MarcosTech',
         userAvatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC9ZExMEjDmSnLlAXKbaMNYAEdkru60Xi3TTLVEERECxfwqTYr9Eh7Sl60SEU2lfEI7-efbU_iO-MoChcaGOBz3ZoqJGQUub35ILB4CNHFy8wfgDGTOlV745OoWkyHctOGugNEmCxBzxln8ue8_J82Mb5lB4a3v_yQbI0q0pGctMF3fCRIuoyhoV5l57w-exoGy7xG-4ToL5ek2KC2kd-He8JRJJKmbVkBpVnO9h7J04oW3GBBF26Xs3DoOj4t4fYn3H7SL23jUeZ0a',
-        text: 'Aceita troca em uma Hi-Capa? Tenho uma TM Gold Match praticamente nova.',
+        text: 'Olá! Você aceita fechar um pacote de consultoria trimestral? Tenho interesse no seu serviço.',
         timestamp: '2h',
         likes: 1,
         isLiked: false,
@@ -325,9 +325,9 @@ export const sampleComments: Comment[] = [
             {
                 id: '2',
                 userId: 'user-2',
-                userName: 'TacticalJoe',
+                userName: 'AnaConsultoria',
                 userAvatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAIBlMCNDt77PpBLAjiQdGf2bR_Q1jZ1e0xmD_-2bsronhDERncS5Ghi88rfMY7cSgcuQejnn1xIPiYqqiWkbYbszAo-aRFHSAYOfSfMy3xJPRuOGHc99__TK-gze060hDaYRhnRKTgeRYKdgaBFW0ZULWf0Kub_9UkW6RhHPEgiok3D44VuOQH9ber7npxyKGN9-Ts0iS3LMEJbJE2UgR60TX7XLeaKuJdbL9aEJyYeFJJnjfiQJ8UAxQnPGVbasUwpnTMBui77JGV',
-                text: 'Opa, agradeço a oferta mano, mas to precisando da grana mesmo. Se tiver interesse na compra, me chama no zap!',
+                text: 'Olá Marcos! Podemos conversar sim. Me chama no botão de negociação para alinharmos os detalhes!',
                 timestamp: '1h',
                 likes: 0,
                 isLiked: false

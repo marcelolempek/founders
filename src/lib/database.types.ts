@@ -1,471 +1,821 @@
-// ============================================
-// Empreendedores de Cristo - Database Types
-// ============================================
-// Generated from Supabase schema
-// ============================================
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
-// Enums
-export type ListingType = 'sale' | 'text';
-export type PostCondition = 'new' | 'like-new' | 'good' | 'fair' | 'poor';
-export type PostStatus = 'active' | 'sold' | 'archived' | 'banned';
-export type UserRole = 'user' | 'moderator' | 'admin';
-export type UserStatus = 'active' | 'suspended' | 'banned';
-export type ReportReason = 'spam' | 'scam' | 'inappropriate' | 'illegal' | 'harassment' | 'other';
-export type ReportStatus = 'pending' | 'investigating' | 'resolved' | 'dismissed';
-export type VerificationType = 'identity' | 'store' | 'partner';
-export type VerificationStatus = 'pending' | 'approved' | 'rejected';
-export type ReportPriority = 'low' | 'medium' | 'high' | 'urgent';
-export type ReportTargetType = 'post' | 'user' | 'comment';
-export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
-export type PaymentMethod = 'pix' | 'credit_card' | 'bank_transfer';
-export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded' | 'cancelled';
-
-// Tables
-export interface Profile {
-  id: string;
-  username: string;
-  full_name: string | null;
-  profession: string | null;
-  bio: string | null;
-  avatar_url: string | null;
-  phone: string | null;
-  email: string | null;
-  website: string | null;
-  location_city: string | null;
-  location_state: string | null;
-  // Geocoding data
-  latitude: number | null;
-  longitude: number | null;
-  postal_code: string | null;
-  reputation_score: number | null;
-  is_verified: boolean | null;
-  role: UserRole | null;
-  status: UserStatus | null;
-  followers_count: number | null;
-  following_count: number | null;
-  posts_count: number | null;
-  sales_count: number | null;
-  reviews_count: number | null;
-  onboarding_completed: boolean | null;
-  whatsapp_verified: boolean | null;
-  default_ships_nationwide: boolean | null;
-  last_login_at: string | null;
-  login_count: number | null;
-  failed_login_count: number | null;
-  locked_until: string | null;
-  last_seen_at: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-}
-
-export interface Post {
-  id: string;
-  user_id: string;
-  title: string;
-  description: string;
-  price: number | null;
-  currency: string;
-  location_city: string | null;
-  location_state: string | null;
-  // Geocoding data
-  latitude: number | null;
-  longitude: number | null;
-  postal_code: string | null;
-  formatted_address: string | null;
-  neighborhood: string | null;
-  category: string;
-  condition: PostCondition;
-  views_count: number | null;
-  likes_count: number | null;
-  comments_count: number | null;
-  status: PostStatus | null;
-  type: ListingType | null;
-  is_boosted: boolean | null;
-  boosted_until: string | null;
-  ships_nationwide: boolean | null;
-  bumped_at: string | null;
-  sold_at: string | null;
-  reported_count: number | null;
-  auto_flagged: boolean | null;
-  flagged_reason: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-  // Relations
-  user?: Profile;
-  images?: PostImage[];
-}
-
-export interface PostImage {
-  id: string;
-  post_id: string;
-  url: string;
-  image_id: string | null; // R2 UUID (null for legacy Supabase)
-  is_cover: boolean;
-  display_order: number;
-  created_at: string;
-}
-
-export interface Follow {
-  id: string;
-  follower_id: string;
-  following_id: string;
-  created_at: string;
-  // Relations
-  follower?: Profile;
-  following?: Profile;
-}
-
-export interface Like {
-  id: string;
-  user_id: string;
-  post_id: string;
-  created_at: string;
-}
-
-export interface Comment {
-  id: string;
-  post_id: string;
-  user_id: string;
-  content: string;
-  parent_id: string | null;
-  is_edited: boolean;
-  created_at: string;
-  updated_at: string;
-  // Relations
-  user?: Profile;
-  replies?: Comment[];
-}
-
-export interface Review {
-  id: string;
-  reviewer_id: string;
-  reviewed_user_id: string;
-  post_id: string | null;
-  rating: number;
-  comment: string | null;
-  is_buyer: boolean;
-  created_at: string;
-  updated_at: string;
-  // Relations
-  reviewer?: Profile;
-  reviewed_user?: Profile;
-}
-
-export interface Report {
-  id: string;
-  reporter_id: string;
-  target_type: ReportTargetType;
-  target_id: string;
-  reason: ReportReason;
-  details: string | null;
-  status: ReportStatus;
-  priority: ReportPriority;
-  assigned_to: string | null;
-  resolution_notes: string | null;
-  resolved_at: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface VerificationRequest {
-  id: string;
-  user_id: string;
-  type: VerificationType;
-  document_urls: string[];
-  status: VerificationStatus;
-  notes: string | null;
-  reviewed_by: string | null;
-  submitted_at: string;
-  reviewed_at: string | null;
-}
-
-export interface Subscription {
-  id: string;
-  user_id: string;
-  verification_request_id: string | null;
-  plan_type: VerificationType;
-  amount: number;
-  currency: string;
-  payment_method: PaymentMethod | null;
-  payment_status: PaymentStatus;
-  payment_reference: string | null;
-  starts_at: string | null;
-  expires_at: string | null;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface SupportTicket {
-  id: string;
-  user_id: string | null;
-  email: string;
-  topic: string;
-  message: string;
-  status: TicketStatus;
-  assigned_to: string | null;
-  response: string | null;
-  responded_at: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Notification {
-  id: string;
-  user_id: string;
-  type: string;
-  title: string;
-  message: string | null;
-  data: Record<string, unknown>;
-  is_read: boolean;
-  read_at: string | null;
-  created_at: string;
-}
-
-export interface ContactView {
-  id: string;
-  user_id: string;
-  post_id: string;
-  viewed_at: string;
-  ip_address: string | null;
-  user_agent: string | null;
-}
-
-// Function return types
-export interface FeedPost {
-  id: string;
-  user_id: string;
-  title: string;
-  description: string;
-  price: number | null;
-  currency: string;
-  location_city: string | null;
-  location_state: string | null;
-  // Geocoding data
-  latitude: number | null;
-  longitude: number | null;
-  postal_code: string | null;
-  neighborhood: string | null;
-  category: string;
-  condition: PostCondition;
-  views_count: number | null;
-  likes_count: number | null;
-  comments_count: number | null;
-  status: PostStatus | null;
-  type: ListingType | null;
-  is_boosted: boolean | null;
-  boosted_until: string | null;
-  ships_nationwide: boolean | null;
-  created_at: string | null;
-  author_username: string | null;
-  author_avatar: string | null;
-  author_is_verified: boolean | null;
-  author_reputation_score: number | null;
-  author_sales_count: number | null;
-  cover_image_url: string | null;
-  is_liked: boolean | null;
-  is_saved: boolean | null;
-  distance_km: number | null;
-  relevance_score: number | null;
-  author_is_followed: boolean | null;
-}
-
-// Post with full relations for detail view
-export interface PostWithDetails extends Post {
-  user: Profile;
-  images: PostImage[];
-  comments: (Comment & { user: Profile })[];
-}
-
-// Profile with stats for profile view
-export interface ProfileComplete extends Profile {
-  active_posts_count: number;
-  calculated_reputation: number;
-  positive_reviews_count: number;
-  negative_reviews_count: number;
-}
-
-export interface PlatformSettings {
-  id: number;
-  platform_name: string;
-  support_email: string;
-  maintenance_mode: boolean;
-  updated_at: string;
-  updated_by?: string;
-}
-
-// Database helper type for Supabase
-export interface Database {
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1"
+  }
   public: {
     Tables: {
-      platform_settings: {
-        Row: PlatformSettings;
-        Insert: Partial<PlatformSettings>;
-        Update: Partial<PlatformSettings>;
-      };
-      profiles: {
-        Row: Profile;
-        Insert: Partial<Profile> & { id: string; username: string };
-        Update: Partial<Profile>;
-      };
-      posts: {
-        Row: Post;
-        Insert: Omit<Post, 'id' | 'created_at' | 'updated_at' | 'views_count' | 'likes_count' | 'comments_count' | 'reported_count' | 'auto_flagged'>;
-        Update: Partial<Post>;
-      };
-      post_images: {
-        Row: PostImage;
-        Insert: Omit<PostImage, 'id' | 'created_at'>;
-        Update: Partial<PostImage>;
-      };
-      follows: {
-        Row: Follow;
-        Insert: Omit<Follow, 'id' | 'created_at'>;
-        Update: Partial<Follow>;
-      };
-      likes: {
-        Row: Like;
-        Insert: Omit<Like, 'id' | 'created_at'>;
-        Update: Partial<Like>;
-      };
+      admin_logs: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: unknown
+          target_id: string | null
+          target_type: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_logs_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
-        Row: Comment;
-        Insert: Omit<Comment, 'id' | 'created_at' | 'updated_at' | 'is_edited'>;
-        Update: Partial<Comment>;
-      };
-      reviews: {
-        Row: Review;
-        Insert: Omit<Review, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Review>;
-      };
-      reports: {
-        Row: Report;
-        Insert: Omit<Report, 'id' | 'created_at' | 'updated_at' | 'priority'>;
-        Update: Partial<Report>;
-      };
-      verification_requests: {
-        Row: VerificationRequest;
-        Insert: Omit<VerificationRequest, 'id' | 'submitted_at'>;
-        Update: Partial<VerificationRequest>;
-      };
-      subscriptions: {
-        Row: Subscription;
-        Insert: Omit<Subscription, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Subscription>;
-      };
-      support_tickets: {
-        Row: SupportTicket;
-        Insert: Omit<SupportTicket, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<SupportTicket>;
-      };
-      notifications: {
-        Row: Notification;
-        Insert: Omit<Notification, 'id' | 'created_at'>;
-        Update: Partial<Notification>;
-      };
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_edited: boolean | null
+          parent_id: string | null
+          post_id: string
+          tenant_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_edited?: boolean | null
+          parent_id?: string | null
+          post_id: string
+          tenant_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_edited?: boolean | null
+          parent_id?: string | null
+          post_id?: string
+          tenant_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments_with_author"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_with_author"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_views: {
-        Row: ContactView;
-        Insert: Omit<ContactView, 'id' | 'viewed_at'>;
-        Update: Partial<ContactView>;
-      };
-      badges: {
         Row: {
-          id: string;
-          name: string;
-          description: string | null;
-          icon: string | null;
-          type: string;
-          default_duration_days: number | null;
-          created_at: string | null;
-        };
+          id: string
+          post_id: string
+          user_id: string
+          viewed_at: string | null
+        }
         Insert: {
-          id?: string;
-          name: string;
-          description?: string | null;
-          icon?: string | null;
-          type?: string;
-          default_duration_days?: number | null;
-          created_at?: string | null;
-        };
+          id?: string
+          post_id: string
+          user_id: string
+          viewed_at?: string | null
+        }
         Update: {
-          id?: string;
-          name?: string;
-          description?: string | null;
-          icon?: string | null;
-          type?: string;
-          default_duration_days?: number | null;
-          created_at?: string | null;
-        };
-      };
-      user_badges: {
+          id?: string
+          post_id?: string
+          user_id?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_views_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_views_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_with_author"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_views_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      follows: {
         Row: {
-          id: string;
-          user_id: string;
-          badge_id: string;
-          verified: boolean | null;
-          verified_at: string | null;
-          expires_at: string | null;
-          created_at: string | null;
-        };
+          created_at: string | null
+          follower_id: string
+          following_id: string
+          id: string
+        }
         Insert: {
-          id?: string;
-          user_id: string;
-          badge_id: string;
-          verified?: boolean | null;
-          verified_at?: string | null;
-          expires_at?: string | null;
-          created_at?: string | null;
-        };
+          created_at?: string | null
+          follower_id: string
+          following_id: string
+          id?: string
+        }
         Update: {
-          id?: string;
-          user_id?: string;
-          badge_id?: string;
-          verified?: boolean | null;
-          verified_at?: string | null;
-          expires_at?: string | null;
-          created_at?: string | null;
-        };
-      };
-    };
+          created_at?: string | null
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          tenant_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          tenant_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          tenant_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_with_author"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          data: Json | null
+          id: string
+          is_read: boolean | null
+          message: string | null
+          read_at: string | null
+          tenant_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data?: Json | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          read_at?: string | null
+          tenant_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          read_at?: string | null
+          tenant_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_images: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          image_id: string
+          is_cover: boolean | null
+          post_id: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          image_id?: string
+          is_cover?: boolean | null
+          post_id: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          image_id?: string
+          is_cover?: boolean | null
+          post_id?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_images_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_images_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_with_author"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          auto_flagged: boolean | null
+          boosted_until: string | null
+          bumped_at: string | null
+          category: string | null
+          comments_count: number | null
+          condition: Database["public"]["Enums"]["post_condition"] | null
+          created_at: string | null
+          currency: string | null
+          description: string
+          flagged_reason: string | null
+          formatted_address: string | null
+          id: string
+          is_boosted: boolean | null
+          is_bumped: boolean | null
+          latitude: number | null
+          likes_count: number | null
+          location_city: string | null
+          location_state: string | null
+          longitude: number | null
+          neighborhood: string | null
+          postal_code: string | null
+          price: number | null
+          reported_count: number | null
+          shares_count: number | null
+          ships_nationwide: boolean | null
+          sold_at: string | null
+          status: Database["public"]["Enums"]["post_status"] | null
+          tenant_id: string | null
+          title: string
+          type: Database["public"]["Enums"]["listing_type"] | null
+          updated_at: string | null
+          user_id: string
+          views_count: number | null
+        }
+        Insert: {
+          auto_flagged?: boolean | null
+          boosted_until?: string | null
+          bumped_at?: string | null
+          category?: string | null
+          comments_count?: number | null
+          condition?: Database["public"]["Enums"]["post_condition"] | null
+          created_at?: string | null
+          currency?: string | null
+          description: string
+          flagged_reason?: string | null
+          formatted_address?: string | null
+          id?: string
+          is_boosted?: boolean | null
+          is_bumped?: boolean | null
+          latitude?: number | null
+          likes_count?: number | null
+          location_city?: string | null
+          location_state?: string | null
+          longitude?: number | null
+          neighborhood?: string | null
+          postal_code?: string | null
+          price?: number | null
+          reported_count?: number | null
+          shares_count?: number | null
+          ships_nationwide?: boolean | null
+          sold_at?: string | null
+          status?: Database["public"]["Enums"]["post_status"] | null
+          tenant_id?: string | null
+          title: string
+          type?: Database["public"]["Enums"]["listing_type"] | null
+          updated_at?: string | null
+          user_id: string
+          views_count?: number | null
+        }
+        Update: {
+          auto_flagged?: boolean | null
+          boosted_until?: string | null
+          bumped_at?: string | null
+          category?: string | null
+          comments_count?: number | null
+          condition?: Database["public"]["Enums"]["post_condition"] | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string
+          flagged_reason?: string | null
+          formatted_address?: string | null
+          id?: string
+          is_boosted?: boolean | null
+          is_bumped?: boolean | null
+          latitude?: number | null
+          likes_count?: number | null
+          location_city?: string | null
+          location_state?: string | null
+          longitude?: number | null
+          neighborhood?: string | null
+          postal_code?: string | null
+          price?: number | null
+          reported_count?: number | null
+          shares_count?: number | null
+          ships_nationwide?: boolean | null
+          sold_at?: string | null
+          status?: Database["public"]["Enums"]["post_status"] | null
+          tenant_id?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["listing_type"] | null
+          updated_at?: string | null
+          user_id?: string
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          followers_count: number | null
+          following_count: number | null
+          full_name: string | null
+          id: string
+          is_verified: boolean | null
+          last_seen_at: string | null
+          latitude: number | null
+          location_city: string | null
+          location_state: string | null
+          longitude: number | null
+          onboarding_completed: boolean | null
+          phone: string | null
+          postal_code: string | null
+          posts_count: number | null
+          profession: string | null
+          reputation_score: number | null
+          reviews_count: number | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          sales_count: number | null
+          status: Database["public"]["Enums"]["user_status"] | null
+          updated_at: string | null
+          username: string
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          followers_count?: number | null
+          following_count?: number | null
+          full_name?: string | null
+          id: string
+          is_verified?: boolean | null
+          last_seen_at?: string | null
+          latitude?: number | null
+          location_city?: string | null
+          location_state?: string | null
+          longitude?: number | null
+          onboarding_completed?: boolean | null
+          phone?: string | null
+          postal_code?: string | null
+          posts_count?: number | null
+          profession?: string | null
+          reputation_score?: number | null
+          reviews_count?: number | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          sales_count?: number | null
+          status?: Database["public"]["Enums"]["user_status"] | null
+          updated_at?: string | null
+          username: string
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          followers_count?: number | null
+          following_count?: number | null
+          full_name?: string | null
+          id?: string
+          is_verified?: boolean | null
+          last_seen_at?: string | null
+          latitude?: number | null
+          location_city?: string | null
+          location_state?: string | null
+          longitude?: number | null
+          onboarding_completed?: boolean | null
+          phone?: string | null
+          postal_code?: string | null
+          posts_count?: number | null
+          profession?: string | null
+          reputation_score?: number | null
+          reviews_count?: number | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          sales_count?: number | null
+          status?: Database["public"]["Enums"]["user_status"] | null
+          updated_at?: string | null
+          username?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      tenant_memberships: {
+        Row: {
+          id: string
+          is_last_active: boolean | null
+          joined_at: string | null
+          role: string | null
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          is_last_active?: boolean | null
+          joined_at?: string | null
+          role?: string | null
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          is_last_active?: boolean | null
+          joined_at?: string | null
+          role?: string | null
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_memberships_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tenant_memberships_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          access_code: string | null
+          avatar_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_private: boolean | null
+          name: string
+          owner_id: string | null
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          access_code?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_private?: boolean | null
+          name: string
+          owner_id?: string | null
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          access_code?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_private?: boolean | null
+          name?: string
+          owner_id?: string | null
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenants_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      suggested_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          followers_count: number | null
+          following_count: number | null
+          full_name: string | null
+          id: string
+          is_verified: boolean | null
+          last_seen_at: string | null
+          latitude: number | null
+          location_city: string | null
+          location_state: string | null
+          longitude: number | null
+          onboarding_completed: boolean | null
+          phone: string | null
+          postal_code: string | null
+          posts_count: number | null
+          profession: string | null
+          reputation_score: number | null
+          reviews_count: number | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          sales_count: number | null
+          status: Database["public"]["Enums"]["user_status"] | null
+          updated_at: string | null
+          username: string | null
+          website: string | null
+        }
+        Relationships: []
+      }
+    }
     Functions: {
-      get_feed_posts: {
-        Args: {
-          p_user_id?: string;
-          p_category?: string;
-          p_limit?: number;
-          p_offset?: number;
-        };
-        Returns: FeedPost[];
-      };
-      check_rate_limit: {
-        Args: {
-          p_user_id: string;
-          p_action: string;
-          p_max_count: number;
-          p_window_minutes?: number;
-        };
-        Returns: boolean;
-      };
-      increment_post_views: {
-        Args: { p_post_id: string };
-        Returns: void;
-      };
-      bump_post: {
-        Args: { p_post_id: string; p_user_id: string };
-        Returns: boolean;
-      };
-      is_following: {
-        Args: { p_follower_id: string; p_following_id: string };
-        Returns: boolean;
-      };
-      has_liked_post: {
-        Args: { p_user_id: string; p_post_id: string };
-        Returns: boolean;
-      };
-      get_post_contact: {
-        Args: { p_post_id: string; p_user_id: string };
-        Returns: { phone: string; username: string }[];
-      };
-    };
-  };
+      active_tenant_id: { Args: never; Returns: string }
+      join_tenant: {
+        Args: { p_access_code?: string; p_tenant_id: string }
+        Returns: Json
+      }
+      leave_tenant: { Args: { p_tenant_id: string }; Returns: Json }
+      set_active_tenant: { Args: { p_tenant_id: string }; Returns: undefined }
+    }
+    Enums: {
+      listing_type: "sale" | "trade" | "auction" | "text"
+      post_condition: "new" | "like-new" | "good" | "fair" | "poor"
+      post_status: "active" | "sold" | "archived" | "banned"
+      user_role: "user" | "moderator" | "admin"
+      user_status: "active" | "suspended" | "banned"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
 }
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+  | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+  | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+  ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+  : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+  ? R
+  : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+    DefaultSchema["Views"])
+  ? (DefaultSchema["Tables"] &
+    DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+      Row: infer R
+    }
+  ? R
+  : never
+  : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+  | keyof DefaultSchema["Tables"]
+  | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+    Insert: infer I
+  }
+  ? I
+  : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+    Insert: infer I
+  }
+  ? I
+  : never
+  : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+  | keyof DefaultSchema["Tables"]
+  | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+    Update: infer U
+  }
+  ? U
+  : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+    Update: infer U
+  }
+  ? U
+  : never
+  : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+  | keyof DefaultSchema["Enums"]
+  | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+  ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+  : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+  ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+  : never

@@ -17,15 +17,15 @@ import type { GeocodingResult } from '@/services/geocoding';
 import type { Profile, PostCondition } from '@/lib/database.types';
 
 const categories = [
-    { id: 'rifles', label: 'Tecnologia', icon: 'sports_martial_arts' },
-    { id: 'pistols', label: 'Consultoria', icon: 'target' },
-    { id: 'smgs', label: 'Construção', icon: 'bolt' },
-    { id: 'shotguns', label: 'Saúde', icon: 'explosion' },
-    { id: 'snipers', label: 'Educação', icon: 'precision_manufacturing' },
-    { id: 'gear', label: 'Marketing', icon: 'backpack' },
-    { id: 'accessories', label: 'Alimentação', icon: 'extension' },
-    { id: 'parts', label: 'Peças', icon: 'build' },
-    { id: 'clothing', label: 'Vestuário', icon: 'checkroom' },
+    { id: 'technology', label: 'Tecnologia', icon: 'dvr' },
+    { id: 'services', label: 'Serviços', icon: 'business_center' },
+    { id: 'consulting', label: 'Consultoria', icon: 'psychology' },
+    { id: 'marketing', label: 'Marketing', icon: 'campaign' },
+    { id: 'design', label: 'Design', icon: 'palette' },
+    { id: 'products', label: 'Produtos', icon: 'inventory_2' },
+    { id: 'tools', label: 'Ferramentas', icon: 'handyman' },
+    { id: 'networking', label: 'Networking', icon: 'groups' },
+    { id: 'legal', label: 'Jurídico', icon: 'gavel' },
     { id: 'other', label: 'Outros', icon: 'more_horiz' },
 ];
 
@@ -348,8 +348,8 @@ export default function CreatePost({ isModal, onClose }: CreatePostProps) {
                             onChange={(e) => setDescription(e.target.value)}
                             className="w-full bg-transparent border-none focus:ring-0 text-[1.1rem] placeholder-slate-500 text-white resize-none h-full p-0 leading-relaxed font-normal"
                             placeholder={postType === 'sale'
-                                ? "O que você está vendendo hoje? Descreva seu item, estado e FPS..."
-                                : "No que você está pensando? Compartilhe com a comunidade..."}
+                                ? "O que você está negociando hoje? Descreva seu serviço ou produto em detalhes..."
+                                : "Qual insight você quer compartilhar? Divida sua experiência com outros empreendedores..."}
                         />
                     </div>
                     {/*  Smart Options (Chips)  */}

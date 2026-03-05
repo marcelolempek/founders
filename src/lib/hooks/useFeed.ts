@@ -27,13 +27,12 @@ export function useFeed(options: UseFeedOptions = {}): UseFeedReturn {
   const [error, setError] = useState<string | null>(null);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const { user } = useUser(); // Use cached user from context
-  const offsetRef = useRef(0); // Use ref to avoid dependency issues
-
-  const fetchIdRef = useRef(0); // Track fetch generations to prevent race conditions
+  const { user } = useUser();
+  const offsetRef = useRef(0);
+  const fetchIdRef = useRef(0);
 
   const fetchPosts = useCallback(async (reset = false) => {
-    const fetchId = ++fetchIdRef.current; // Increment generation
+    const fetchId = ++fetchIdRef.current;
     try {
       setLoading(true);
       setError(null);

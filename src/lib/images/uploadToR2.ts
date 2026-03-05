@@ -19,6 +19,10 @@ export async function uploadBlobToR2(
         throw new Error(`Failed to get upload URL: ${error.message}`);
     }
 
+    if (data?.error) {
+        throw new Error(`R2 Function Error: ${data.error}`);
+    }
+
     const { uploadUrl } = data;
 
     // Upload blob to R2 using presigned URL

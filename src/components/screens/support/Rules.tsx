@@ -24,7 +24,6 @@ export default function RulesGuidelinesScreen1() {
                     </p>
                 </div>
 
-                {/* SECTION 1: What is Allowed */}
                 <section className="space-y-4">
                     <div className="flex items-center gap-2 px-1">
                         <span className="material-symbols-outlined text-primary">check_circle</span>
@@ -34,24 +33,24 @@ export default function RulesGuidelinesScreen1() {
                         <div className="flex gap-3 items-start">
                             <span className="material-symbols-outlined text-primary text-[20px] mt-0.5 shrink-0">check</span>
                             <div>
-                                <p className="text-slate-900 font-medium text-sm">Soluções Profissionais</p>
-                                <p className="text-slate-900/50 text-xs">AEGs, GBBs, Springers e sistemas HPA.</p>
+                                <p className="text-slate-900 font-medium text-sm">Serviços Profissionais</p>
+                                <p className="text-slate-900/50 text-xs">Consultorias, mentorias, design, marketing e assistência profissional.</p>
                             </div>
                         </div>
                         <div className="h-px w-full bg-white/5"></div>
                         <div className="flex gap-3 items-start">
                             <span className="material-symbols-outlined text-primary text-[20px] mt-0.5 shrink-0">check</span>
                             <div>
-                                <p className="text-slate-900 font-medium text-sm">Equipamento Tático</p>
-                                <p className="text-slate-900/50 text-xs">Coletes, capacetes, plate carriers e cintos.</p>
+                                <p className="text-slate-900 font-medium text-sm">Produtos e Negócios</p>
+                                <p className="text-slate-900/50 text-xs">Equipamentos, materiais e produtos físicos para o dia a dia do empreendedor.</p>
                             </div>
                         </div>
                         <div className="h-px w-full bg-white/5"></div>
                         <div className="flex gap-3 items-start">
                             <span className="material-symbols-outlined text-primary text-[20px] mt-0.5 shrink-0">check</span>
                             <div>
-                                <p className="text-slate-900 font-medium text-sm">Acessórios e Peças</p>
-                                <p className="text-slate-900/50 text-xs">Miras, empunhaduras, upgrades internos e modificações externas.</p>
+                                <p className="text-slate-900 font-medium text-sm">Parcerias Estratégicas</p>
+                                <p className="text-slate-900/50 text-xs">Networking, conexões e oportunidades reais de colaboração entre membros.</p>
                             </div>
                         </div>
                     </div>
@@ -129,7 +128,7 @@ export default function RulesGuidelinesScreen1() {
 
                 {/* Footer Text */}
                 <div className="text-center pt-4 pb-2">
-                    <p className="text-slate-900/30 text-xs">Última atualização: Janeiro 2026</p>
+                    <p className="text-slate-900/30 text-xs">Última atualização: Março 2026</p>
                 </div>
             </main>
 

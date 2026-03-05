@@ -87,10 +87,7 @@ export function useSuggestedSellers(limit: number = 3) {
                 let query = supabase
                     .from('profiles')
                     .select('id, username, avatar_url, reputation_score, sales_count, last_seen_at')
-                    .neq('id', user.id)
-                    .gte('reputation_score', 4.0)
-                    .gt('sales_count', 0)
-                    .gte('last_seen_at', thirtyDaysAgo.toISOString());
+                    .neq('id', user.id);
 
                 // Only add the NOT IN filter if there are followed users
                 if (followedIds.length > 0) {
@@ -98,8 +95,7 @@ export function useSuggestedSellers(limit: number = 3) {
                 }
 
                 const { data, error } = await query
-                    .order('reputation_score', { ascending: false })
-                    .order('sales_count', { ascending: false })
+                    .order('created_at', { ascending: false })
                     .limit(limit);
 
                 if (error) throw error;

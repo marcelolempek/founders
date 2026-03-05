@@ -33,7 +33,7 @@ export default function Parceira() {
                         <span className="material-symbols-outlined">search</span>
                     </button>
                     <div className="flex items-center gap-2 cursor-pointer">
-                        <div className="bg-center bg-no-repeat bg-cover rounded-full size-9 border-2 border-[#e5e7eb] dark:border-[#292e38]" data-alt="User profile avatar showing a tactical gear enthusiast" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuA-c58QVvU4dcZm43oZ59Yhpgz0JRgvXpEBodw0Q7ZrXNoVkSqpW0Bb6YfM8ZD6OnmVrQFexdCe_UyHwzScQDAc7Z9P18Cq1f4bbVxxnaK-xHrd9jV-e1fBPT3brVfA0-XAH_3XrNLdfzeF1f9tEfhFk2Oer3mcn4Zkfs8-tElRF530TLFWPef-LpuCF2t3dnuG1bgP1Rn-O5KhCzgJEdz9jk10PLL05SXEiLI0jGtsX9vBezKD6Ynizt3txUal-gD7Ho0UFFEKioQ2")' }}></div>
+                        <div className="bg-center bg-no-repeat bg-cover rounded-full size-9 border-2 border-[#e5e7eb] dark:border-[#292e38]" data-alt="User profile avatar showing a Christian entrepreneur" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuA-c58QVvU4dcZm43oZ59Yhpgz0JRgvXpEBodw0Q7ZrXNoVkSqpW0Bb6YfM8ZD6OnmVrQFexdCe_UyHwzScQDAc7Z9P18Cq1f4bbVxxnaK-xHrd9jV-e1fBPT3brVfA0-XAH_3XrNLdfzeF1f9tEfhFk2Oer3mcn4Zkfs8-tElRF530TLFWPef-LpuCF2t3dnuG1bgP1Rn-O5KhCzgJEdz9jk10PLL05SXEiLI0jGtsX9vBezKD6Ynizt3txUal-gD7Ho0UFFEKioQ2")' }}></div>
                     </div>
                 </div>
             </header>

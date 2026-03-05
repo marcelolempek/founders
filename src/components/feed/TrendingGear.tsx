@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { useTrendingCategories } from '@/lib/hooks/useFeedSidebar';
 
 const categoryLabels: Record<string, string> = {
-    rifles: 'Rifles',
-    pistols: 'Pistolas',
-    smgs: 'SMGs',
-    shotguns: 'Shotguns',
-    snipers: 'Snipers',
-    gear: 'Produtos/Serviços',
-    accessories: 'Acessórios',
-    parts: 'Peças',
-    clothing: 'Vestuário',
+    technology: 'Tecnologia',
+    services: 'Serviços',
+    consulting: 'Consultoria',
+    marketing: 'Marketing',
+    design: 'Design',
+    products: 'Produtos',
+    tools: 'Ferramentas',
+    networking: 'Networking',
+    legal: 'Jurídico',
     other: 'Outros',
 };
 

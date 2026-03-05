@@ -29,7 +29,7 @@ export default function BadgeApplicationConfirmation() {
                     <button className="flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-slate-200 transition-colors">
                         <span className="material-symbols-outlined text-xl">chat_bubble</span>
                     </button>
-                    <div className="size-9 rounded-full bg-cover bg-center border border-gray-200 dark:border-slate-200 ml-2" data-alt="User profile avatar showing a tactical gear enthusiast" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKT3smSPdCExygBF6-QMX2_vdkCamirf9-haHrSOLogeIB5JLVOEwbSMghU3I0uRwrDzhG9o4h3eDgM741mFn9tDVVMzniaB31oYLDmDrv5LdE8UC44y8_doj2feP6XssQQv-NyIKZlr5HWdq0t3WCqNOZZJqiWbrdrQ75D1xUDspqNsGt4rCUCqDxrxOl1jEpnJD6k0nslBVfNNngS97iagAkDYnGyXh53o5DOKndLuaiMjA6kPDXL8OxA_TmnoKk2phYLIESV27y")' }}>
+                    <div className="size-9 rounded-full bg-cover bg-center border border-gray-200 dark:border-slate-200 ml-2" data-alt="User profile avatar showing a Christian entrepreneur" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKT3smSPdCExygBF6-QMX2_vdkCamirf9-haHrSOLogeIB5JLVOEwbSMghU3I0uRwrDzhG9o4h3eDgM741mFn9tDVVMzniaB31oYLDmDrv5LdE8UC44y8_doj2feP6XssQQv-NyIKZlr5HWdq0t3WCqNOZZJqiWbrdrQ75D1xUDspqNsGt4rCUCqDxrxOl1jEpnJD6k0nslBVfNNngS97iagAkDYnGyXh53o5DOKndLuaiMjA6kPDXL8OxA_TmnoKk2phYLIESV27y")' }}>
                     </div>
                 </div>
             </header>
